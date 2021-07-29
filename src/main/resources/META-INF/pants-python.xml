@@ -1,0 +1,44 @@
+<idea-plugin>
+  <projectListeners>
+    <listener class="com.twitter.intellij.pants.service.python.component.PantsPythonRunConfigListener"
+              topic="com.intellij.execution.RunManagerListener"/>
+  </projectListeners>
+
+  <extensions defaultExtensionNs="com.eslgaming.engineering.intellij-pants-plugin">
+    <projectInfoModifier implementation="com.twitter.intellij.pants.service.python.PythonInfoModifier" order="before compressor"/>
+    <projectResolver implementation="com.twitter.intellij.pants.service.python.PythonPexResolver"/>
+    <projectResolver implementation="com.twitter.intellij.pants.service.python.PythonRequirementsResolver"/>
+  </extensions>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <localInspection bundle="messages.PantsBundle" key="pants.info.python.facet.missing"
+                     groupName="Pants" enabledByDefault="true"
+                     implementationClass="com.twitter.intellij.pants.inspection.PythonFacetInspection"/>
+    <localInspection bundle="messages.PantsBundle" key="pants.info.mistreated.build.file"
+                     groupName="Pants" enabledByDefault="true"
+                     implementationClass="com.twitter.intellij.pants.inspection.BuildFileTypeInspection"/>
+
+    <externalProjectDataService implementation="com.twitter.intellij.pants.service.python.PantsPythonSetupDataService"/>
+
+    <fileTypeDetector implementation="com.twitter.intellij.pants.file.BUILDFileTypeDetector"/>
+    <fileType name="PEX" extensions="pex" implementationClass="com.twitter.intellij.pants.file.PexFileType" />
+
+    <completion.contributor language="Python"
+                            implementationClass="com.twitter.intellij.pants.completion.PantsCompletionContributor"/>
+
+    <psi.referenceContributor implementation="com.twitter.intellij.pants.psi.reference.PantsReferenceContributor"/>
+
+    <fileBasedIndex implementation="com.twitter.intellij.pants.index.PantsTargetIndex"/>
+    <fileBasedIndex implementation="com.twitter.intellij.pants.index.PantsAddressesIndex"/>
+
+    <!--We need python plugin to insert a dependency to a proper BUILD file-->
+    <codeInsight.unresolvedReferenceQuickFixProvider
+        implementation="com.twitter.intellij.pants.quickfix.PantsUnresolvedJavaReferenceQuickFixProvider"/>
+
+    <runConfigurationProducer implementation="com.twitter.intellij.pants.execution.PantsPythonTestRunConfigurationProducer" order="last"/>
+  </extensions>
+
+  <extensions defaultExtensionNs="Pythonid">
+    <pyReferenceResolveProvider implementation="com.twitter.intellij.pants.psi.resolve.PantsReferenceResolveProvider"/>
+  </extensions>
+</idea-plugin>

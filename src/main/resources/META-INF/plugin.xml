@@ -1,0 +1,172 @@
+<idea-plugin>
+    <id>com.eslgaming.engineering.intellij-pants-plugin</id>
+    <name>Pants Support (ESL version)</name>
+    <description>Pants Support (ESL version)</description>
+    <vendor>com.eslgaming</vendor>
+
+    <!-- Product and plugin compatibility requirements -->
+    <!-- https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+
+    <depends optional="true" config-file="pants-scala.xml">org.intellij.scala</depends>
+    <depends optional="true" config-file="pants-python.xml">PythonCore</depends>
+
+    <actions>
+        <!--  This group adds "Import Project" action which to the Welcome screen which was removed in 2020.1  -->
+        <group id="WelcomeScreen.QuickStart.Pants">
+            <action id="WelcomeScreen.ImportProject" class="com.intellij.ide.actions.ImportProjectAction"
+                    icon="AllIcons.ToolbarDecorator.Import" text="Import Project"/>
+            <add-to-group group-id="WelcomeScreen.QuickStart" anchor="after" relative-to-action="WelcomeScreen.QuickStart.EmptyState"/>
+        </group>
+
+        <group id="Pants.Menu" text="_Pants" description="Pants">
+            <add-to-group group-id="MainMenu" anchor="last"/>
+            <action id="com.twitter.intellij.pants.ui.PantsProjectRefreshAction"
+                    class="com.twitter.intellij.pants.ui.PantsProjectRefreshAction"
+                    text="Refresh Pants project">
+            </action>
+            <action id="com.twitter.intellij.pants.ui.PantsSdkRefreshAction"
+                    class="com.twitter.intellij.pants.ui.PantsSdkRefreshAction"
+                    text="Refresh Pants Project SDK">
+            </action>
+            <action id="com.twitter.intellij.pants.ui.PantsOptionsInvalidationAction"
+                    class="com.twitter.intellij.pants.ui.PantsOptionsInvalidationAction"
+                    text="Invalidate Pants plugin caches">
+            </action>
+            <action id="com.twitter.intellij.pants.compiler.actions.PantsCompileAllTargetsAction"
+                    class="com.twitter.intellij.pants.compiler.actions.PantsCompileAllTargetsAction"
+                    text="Compile all targets in project">
+            </action>
+            <action id="com.twitter.intellij.pants.compiler.actions.PantsCompileCurrentTargetAction"
+                    class="com.twitter.intellij.pants.compiler.actions.PantsCompileCurrentTargetAction"
+                    text="Compile target(s) in the selected editor">
+            </action>
+            <action id="com.twitter.intellij.pants.ui.PantsToBspProjectAction"
+                    class="com.twitter.intellij.pants.ui.PantsToBspProjectAction"
+                    text="Create new Fastpass project based on this Pants project">
+            </action>
+            <action id="com.twitter.intellij.pants.components.impl.FastpassUpdater.Action"
+                    class="com.twitter.intellij.pants.components.impl.FastpassUpdater$Action"
+                    text="Update Fastpass version">
+            </action>
+        </group>
+
+        <action class="com.twitter.intellij.pants.bsp.AmendAction"
+                id="com.twitter.intellij.pants.bsp.AmendAction"/>
+
+        <group id="Pants.Compile" text="Pants Compile" description="Pants compilation options" icon="PantsIcons.Icon"
+               popup="true" class="com.twitter.intellij.pants.compiler.actions.PantsCompileActionGroup">
+            <add-to-group group-id="ProjectViewCompileGroup"/>
+            <add-to-group group-id="Pants.Menu" anchor="first"/>
+        </group>
+
+        <!-- Ideally this would be in CutCopyPasteGroup anchored after CopyPaths, but if we do that,
+         it also appears in the Edit menu. It turns out that CopyPaths doesn't actually work in the
+         Edit menu (it no-ops), and if we put this action there, it doesn't actually get invoked when it's
+         clicked.
+
+         So instead of putting the button both in the Edit menu (where it doesn't work), and where we want
+         in the ProjectViewPopupMenu (where it does), we just put it in the ProjectViewPopupMenu just after
+         the CutCopyPasteGroup. It means the Paste button is awkwardly between Copy Path and Copy Path
+         Relative to Build Root, but that seems less bad than having a non-functioning button elsewhere in
+         the UI. -->
+        <action id="Pants.CopyPathRelativeToBuildRootAction"
+                class="com.twitter.intellij.pants.ui.CopyPathRelativeToBuildRootAction"
+                text="Copy Path Relative to Build Root">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="after" relative-to-action="CutCopyPasteGroup"/>
+        </action>
+    </actions>
+
+    <extensionPoints>
+        <extensionPoint name="projectResolver" interface="com.twitter.intellij.pants.service.project.PantsResolverExtension"/>
+        <extensionPoint name="projectInfoModifier" interface="com.twitter.intellij.pants.service.project.PantsProjectInfoModifierExtension"/>
+        <extensionPoint name="pantsExternalMetricsListener" interface="com.twitter.intellij.pants.metrics.PantsExternalMetricsListener"/>
+    </extensionPoints>
+
+    <extensions defaultExtensionNs="com.eslgaming.engineering.intellij-pants-plugin">
+        <projectInfoModifier implementation="com.twitter.intellij.pants.service.project.modifier.PantsCyclicDependenciesModifier"
+                             id="cyclicDeps" order="first"/>
+        <projectInfoModifier implementation="com.twitter.intellij.pants.service.project.modifier.PantsSourceRootCompressor"
+                             id="compressor" order="before emptyTargetsRemover"/>
+        <projectInfoModifier implementation="com.twitter.intellij.pants.service.project.modifier.PantsEmptyTargetRemover"
+                             id="emptyTargetsRemover" order="before commonSourceRoots"/>
+        <projectInfoModifier implementation="com.twitter.intellij.pants.service.project.modifier.PantsCommonSourceRootModifier"
+                             id="commonSourceRoots" order="before shortener"/>
+        <projectInfoModifier implementation="com.twitter.intellij.pants.service.project.modifier.PantsTargetNamesShortenerModifier"
+                             id="shortener" order="last"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.eslgaming.engineering.intellij-pants-plugin">
+        <projectResolver implementation="com.twitter.intellij.pants.service.project.resolver.PantsCreateModulesExtension" order="first"/>
+        <projectResolver implementation="com.twitter.intellij.pants.service.project.resolver.PantsSourceRootsExtension"/>
+        <projectResolver implementation="com.twitter.intellij.pants.service.project.resolver.PantsModuleDependenciesExtension"/>
+        <projectResolver implementation="com.twitter.intellij.pants.service.project.resolver.PantsLibrariesExtension"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <attachSourcesProvider implementation="com.twitter.intellij.pants.bsp.SourceJarGenerator"/>
+        <macro implementation="com.twitter.intellij.pants.macro.FilePathRelativeToBuiltRootMacro"/>
+        <localInspection bundle="messages.PantsBundle" key="pants.info.python.plugin.missing"
+                         groupName="Pants" enabledByDefault="true"
+                         implementationClass="com.twitter.intellij.pants.inspection.PythonPluginInspection"/>
+
+        <projectConfigurable groupId="build.tools" groupWeight="110" id="reference.settingsdialog.project.pants"
+                             instance="com.twitter.intellij.pants.settings.PantsConfigurable"
+                             key="pants.name" bundle="messages.PantsBundle"/>
+        <actionConfigurationCustomizer implementation="com.twitter.intellij.pants.components.impl.PantsActionConfigurationCustomizer"/>
+        <projectOpenProcessor implementation="com.twitter.intellij.pants.service.project.PantsProjectOpenProcessor" order="last"/>
+        <projectImportProvider
+                implementation="com.twitter.intellij.pants.service.project.wizard.PantsProjectImportProvider"/>
+
+        <projectImportBuilder
+                implementation="com.twitter.intellij.pants.service.project.wizard.PantsProjectImportBuilder"/>
+
+        <stepsBeforeRunProvider implementation="com.twitter.intellij.pants.execution.PantsMakeBeforeRun" id="PantsMakeBeforeRun" order="last"/>
+
+        <runConfigurationExtension implementation="com.twitter.intellij.pants.execution.PantsClasspathRunConfigurationExtension"/>
+        <configurationType implementation="com.twitter.intellij.pants.execution.PantsExternalTaskConfigurationType"/>
+        <runConfigurationProducer implementation="com.twitter.intellij.pants.execution.PantsJUnitTestRunConfigurationProducer"/>
+
+        <!--Listener to be called after resolving projects finishes. -->
+        <externalSystemTaskNotificationListener
+                implementation="com.twitter.intellij.pants.service.project.PantsProjectImportNotificationListener"/>
+
+        <externalSystemManager implementation="com.twitter.intellij.pants.PantsManager"/>
+
+        <applicationService serviceInterface="com.twitter.intellij.pants.metrics.PantsExternalMetricsListener"
+                            serviceImplementation="com.twitter.intellij.pants.metrics.PantsExternalMetricsListenerManager"/>
+
+        <applicationService serviceInterface="com.twitter.intellij.pants.components.PantsInitService"
+                            serviceImplementation="com.twitter.intellij.pants.components.impl.PantsInitServiceImpl"/>
+
+        <projectService serviceImplementation="com.twitter.intellij.pants.settings.PantsSettings"/>
+        <projectService serviceImplementation="com.twitter.intellij.pants.settings.PantsLocalSettings"/>
+        <projectService serviceImplementation="com.twitter.intellij.pants.bsp.JarMappings"/>
+        <projectService serviceImplementation="com.twitter.intellij.pants.bsp.AmendService"/>
+        <projectService serviceImplementation="com.twitter.intellij.pants.bsp.FastpassConfigSpecService"/>
+        <applicationService serviceImplementation="com.twitter.intellij.pants.service.project.FastpassRecommendationNotificationService"/>
+
+        <treeStructureProvider implementation="com.twitter.intellij.pants.projectview.PantsTreeStructureProvider"/>
+        <projectViewPane implementation="com.twitter.intellij.pants.projectview.ProjectFilesViewPane"/>
+        <projectViewPane implementation="com.twitter.intellij.pants.projectview.TargetSpecsViewPane"/>
+
+        <toolWindow id="Pants" anchor="right" icon="PantsIcons.Icon" factoryClass="com.twitter.intellij.pants.ui.PantsToolWindowFactory"/>
+        <externalSystemNotificationExtension implementation="com.twitter.intellij.pants.notification.PantsNotificationCustomizer"/>
+        <externalProjectDataService implementation="com.twitter.intellij.pants.service.project.metadata.PantsMetadataService"/>
+        <projectService serviceImplementation="com.twitter.intellij.pants.components.PantsProjectCache"/>
+        <projectService serviceImplementation="com.twitter.intellij.pants.ui.PantsConsoleManager"/>
+    </extensions>
+
+    <applicationListeners>
+        <listener class="com.twitter.intellij.pants.components.impl.PantsProjectComponentImpl"
+                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
+    </applicationListeners>
+
+    <projectListeners>
+        <listener class="com.twitter.intellij.pants.execution.SetJarManifestCommandLineShortener"
+                  topic="com.intellij.execution.RunManagerListener"/>
+        <listener class="com.twitter.intellij.pants.metrics.LivePantsMetrics"
+                  topic="com.intellij.openapi.project.DumbService$DumbModeListener"/>
+    </projectListeners>
+</idea-plugin>
