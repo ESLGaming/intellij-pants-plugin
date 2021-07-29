@@ -1,1 +1,1 @@
-rootProject.name = "Pants Support (ESL version)"
+rootProject.name = "intellij-pants-plugin"
