@@ -1,0 +1,13 @@
+image: base.docker.artstore.code.esl.systems/buster/java11:latest
+
+stages:
+  - build
+
+Build plugin:
+  stage: build
+  script:
+    - ./gradlew buildPlugin
+  artifacts:
+    paths:
+      - build/distributions/*.zip
+    expire_in: 1 week
