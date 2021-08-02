@@ -44,7 +44,7 @@ public class PantsProjectCache implements Disposable {
   }
 
   public static PantsProjectCache getInstance(@NotNull Project project) {
-    return ServiceManager.getService(project, PantsProjectCache.class);
+    return project.getService(PantsProjectCache.class);
   }
 
   public boolean folderContainsSourceRoot(@NotNull VirtualFile file) {

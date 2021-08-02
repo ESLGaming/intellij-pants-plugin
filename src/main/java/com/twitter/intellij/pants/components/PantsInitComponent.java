@@ -4,6 +4,7 @@
 package com.twitter.intellij.pants.components;
 
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.components.NamedComponent;
 
-public interface PantsInitService extends Disposable {
+public interface PantsInitComponent extends Disposable, NamedComponent {
 }

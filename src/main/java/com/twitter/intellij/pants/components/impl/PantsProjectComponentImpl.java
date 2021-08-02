@@ -7,7 +7,6 @@ import com.intellij.ProjectTopics;
 import com.intellij.codeInspection.magicConstant.MagicConstantInspection;
 import com.intellij.execution.RunManagerListener;
 import com.intellij.execution.RunnerAndConfigurationSettings;
-import com.intellij.ide.impl.NewProjectUtil;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.externalSystem.ExternalSystemManager;
@@ -21,6 +20,7 @@ import com.intellij.openapi.project.ModuleListener;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.projectRoots.ex.JavaSdkUtil;
 import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vcs.changes.ChangeListManagerImpl;
@@ -67,6 +67,7 @@ public class PantsProjectComponentImpl implements ProjectManagerListener {
     if (project.isDefault()) {
       return;
     }
+
     StartupManager.getInstance(project).registerPostStartupActivity(
       new Runnable() {
         @Override
@@ -120,7 +121,7 @@ public class PantsProjectComponentImpl implements ProjectManagerListener {
           final boolean enableExportDepAsJar =
             Boolean.parseBoolean(Optional.ofNullable(PropertiesComponent.getInstance(project).getValue("dep_as_jar")).orElse("false"));
 
-          /**
+          /*
            * Generate the import spec for the next refresh.
            */
           final List<String> targetSpecs = PantsUtil.gson.fromJson(serializedTargets, PantsUtil.TYPE_LIST_STRING);
@@ -131,7 +132,7 @@ public class PantsProjectComponentImpl implements ProjectManagerListener {
             new PantsProjectSettings(
               targetSpecs, targetSpecs, projectPath, loadLibsAndSources, enableIncrementalImport.isPresent(), enableIncrementalImport.orElse(0), useIdeaProjectJdk, enableExportDepAsJar, useIntellijCompiler);
 
-          /**
+          /*
            * Following procedures in {@link com.intellij.openapi.externalSystem.util.ExternalSystemUtil#refreshProjects}:
            * Make sure the setting is injected into the project for refresh.
            */
@@ -251,17 +252,17 @@ public class PantsProjectComponentImpl implements ProjectManagerListener {
 
   private void applyProjectSdk(Project project) {
     Optional<VirtualFile> pantsExecutable = PantsUtil.findPantsExecutable(project);
-    if (!pantsExecutable.isPresent()) {
+    if (pantsExecutable.isEmpty()) {
       return;
     }
 
     Optional<Sdk> sdk = PantsSdkUtil.getDefaultJavaSdk(pantsExecutable.get().getPath(), project);
-    if (!sdk.isPresent()) {
+    if (sdk.isEmpty()) {
       return;
     }
 
     ApplicationManager.getApplication().runWriteAction(() -> {
-      NewProjectUtil.applyJdkToProject(project, sdk.get());
+      JavaSdkUtil.applyJdkToProject(project, sdk.get());
     });
 
     ApplicationManager.getApplication().executeOnPooledThread(() -> {

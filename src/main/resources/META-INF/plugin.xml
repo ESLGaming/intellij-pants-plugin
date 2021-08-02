@@ -4,13 +4,20 @@
     <description>Pants Support (ESL version)</description>
     <vendor>com.eslgaming</vendor>
 
-    <!-- Product and plugin compatibility requirements -->
-    <!-- https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
+    <depends>com.intellij.gradle</depends>
 
     <depends optional="true" config-file="pants-scala.xml">org.intellij.scala</depends>
     <depends optional="true" config-file="pants-python.xml">PythonCore</depends>
+    <depends optional="true" config-file="pants-python.xml">Pythonid</depends>
+
+    <application-components>
+        <component>
+            <interface-class>com.twitter.intellij.pants.components.PantsInitComponent</interface-class>
+            <implementation-class>com.twitter.intellij.pants.components.impl.PantsInitComponentImpl</implementation-class>
+        </component>
+    </application-components>
 
     <actions>
         <!--  This group adds "Import Project" action which to the Welcome screen which was removed in 2020.1  -->
@@ -136,9 +143,6 @@
 
         <applicationService serviceInterface="com.twitter.intellij.pants.metrics.PantsExternalMetricsListener"
                             serviceImplementation="com.twitter.intellij.pants.metrics.PantsExternalMetricsListenerManager"/>
-
-        <applicationService serviceInterface="com.twitter.intellij.pants.components.PantsInitService"
-                            serviceImplementation="com.twitter.intellij.pants.components.impl.PantsInitServiceImpl"/>
 
         <projectService serviceImplementation="com.twitter.intellij.pants.settings.PantsSettings"/>
         <projectService serviceImplementation="com.twitter.intellij.pants.settings.PantsLocalSettings"/>

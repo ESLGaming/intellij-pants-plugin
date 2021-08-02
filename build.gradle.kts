@@ -28,8 +28,8 @@ dependencies {
 // Configure gradle-intellij-plugin plugin.
 // Read more: https://github.com/JetBrains/gradle-intellij-plugin
 intellij {
-    version.set(properties("platformVersion"))
     type.set(properties("platformType"))
+    version.set(properties("platformVersion"))
     downloadSources.set(properties("platformDownloadSources").toBoolean())
     updateSinceUntilBuild.set(true)
 
