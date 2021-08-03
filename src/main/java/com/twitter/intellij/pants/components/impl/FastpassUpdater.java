@@ -82,12 +82,17 @@ public class FastpassUpdater {
     @Override
     public void update(@NotNull AnActionEvent e) {
       Project project = e.getProject();
-      if(project != null) {
-        boolean show = FastpassUtils.getFastpassPath(project).isPresent();
-        e.getPresentation().setEnabledAndVisible(show);
-      } else {
-        e.getPresentation().setEnabledAndVisible(false);
+      boolean show = false;
+
+      if (project != null) {
+        try {
+          show = FastpassUtils.getFastpassPath(project).isPresent();
+        } catch(Exception ex) {
+          show = false;
+        }
       }
+
+      e.getPresentation().setEnabledAndVisible(show);
     }
 
     @Override
@@ -154,17 +159,18 @@ public class FastpassUpdater {
         .createNotification(
           NOTIFICATION_TITLE,
           "<a href='" + NOTIFICATION_HREF + "'>Update</a> fastpass to version: " + systemVersion,
-          NotificationType.INFORMATION,
-          new NotificationListener.Adapter() {
-            @Override
-            protected void hyperlinkActivated(@NotNull Notification notification, @NotNull HyperlinkEvent e) {
-              if (NOTIFICATION_HREF.equals(e.getDescription())) {
-                updateFastpassVersion(project, data);
-              }
-              notification.expire();
-            }
-          }
+          NotificationType.INFORMATION
         );
+
+      notification.setListener(new NotificationListener.Adapter() {
+        @Override
+        protected void hyperlinkActivated(@NotNull Notification notification, @NotNull HyperlinkEvent e) {
+          if (NOTIFICATION_HREF.equals(e.getDescription())) {
+            updateFastpassVersion(project, data);
+          }
+          notification.expire();
+        }
+      });
 
       notification.notify(project);
     }
