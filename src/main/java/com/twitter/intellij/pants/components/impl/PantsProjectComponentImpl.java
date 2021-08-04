@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class PantsProjectComponentImpl implements ProjectManagerListener {
+
   @Override
   public void projectClosed(@NotNull Project project) {
     PantsMetrics.report();
@@ -56,7 +57,6 @@ public class PantsProjectComponentImpl implements ProjectManagerListener {
 
   @Override
   public void projectOpened(@NotNull Project project) {
-    PantsMetrics.initialize();
     if (PantsUtil.isPantsProject(project)) {
       // projectOpened() is called on the dispatch thread, while
       // addPantsProjectIgnoreDirs() calls an external process,

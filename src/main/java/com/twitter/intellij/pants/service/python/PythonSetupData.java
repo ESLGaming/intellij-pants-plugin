@@ -14,13 +14,15 @@ import org.jetbrains.annotations.NotNull;
 
 public class PythonSetupData extends AbstractExternalEntityData {
   private static final long serialVersionUID = 1L;
+
   @NotNull
   public static final Key<PythonSetupData> KEY =
     Key.create(PythonSetupData.class, ProjectKeys.LIBRARY_DEPENDENCY.getProcessingWeight() + 1);
-  private final PythonInterpreterInfo myInterpreterInfo;
-  private final ModuleData myOwnerModuleData;
 
-  @PropertyMapping({"myOwnerModuleData", "interpreterInfo"})
+  private final ModuleData myOwnerModuleData;
+  private final PythonInterpreterInfo myInterpreterInfo;
+
+  @PropertyMapping({"myOwnerModuleData", "myInterpreterInfo"})
   public PythonSetupData(ModuleData ownerModuleData, @NotNull PythonInterpreterInfo interpreterInfo) {
     super(PantsConstants.SYSTEM_ID);
     myOwnerModuleData = ownerModuleData;
