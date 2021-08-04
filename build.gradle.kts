@@ -58,6 +58,10 @@ tasks {
         untilBuild.set(properties("pluginUntilBuild"))
     }
 
+    publishPlugin {
+        token.set(System.getenv("ORG_GRADLE_PROJECT_intellijPublishToken"))
+    }
+
     runIde {
         maxHeapSize = "4G"
         jvmArgs = listOf("-Dpants.metrics.enable=true", "-Dvcs.log.index.git=false")

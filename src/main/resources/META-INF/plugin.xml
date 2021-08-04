@@ -1,8 +1,11 @@
 <idea-plugin>
     <id>com.eslgaming.engineering.intellij-pants-plugin</id>
     <name>Pants Support (ESL version)</name>
-    <description>Pants Support (ESL version)</description>
-    <vendor>com.eslgaming</vendor>
+    <description><![CDATA[
+    adds support for Pants build system. This is a fork of the <a href="https://github.com/pantsbuild/intellij-pants-plugin/">official Pants plugin</a> maintained by ESL and used internally
+    to build our Scala monorepository.
+    ]]></description>
+    <vendor url="https://about.eslgaming.com" email="engineering@eslgaming.com">ESL</vendor>
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
