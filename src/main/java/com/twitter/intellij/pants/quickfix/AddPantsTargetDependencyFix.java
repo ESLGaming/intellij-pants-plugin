@@ -56,7 +56,7 @@ public class AddPantsTargetDependencyFix extends PantsQuickFix {
   @Override
   public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile file) {
     final Module module = ModuleUtil.findModuleForPsiElement(file);
-    return module != null && PantsUtil.findBUILDFileForModule(module) != null;
+    return module != null && PantsUtil.findBUILDFileForModule(module).isPresent();
   }
 
   @Override

@@ -53,13 +53,13 @@ public class PythonPexResolver implements PantsResolverExtension {
 
   private Optional<VirtualFile> findSpecificPexVersionInHomeDirectory(Optional<VirtualFile> workingDir) {
     final Optional<String> pantsVersion = PantsUtil.findPantsVersion(workingDir);
-    if (!pantsVersion.isPresent()) {
+    if (pantsVersion.isEmpty()) {
       LOG.warn(PantsBundle.message("pants.library.no.version"));
       return Optional.empty();
     }
 
     final Optional<VirtualFile> folderWithPex = PantsUtil.findFolderWithPex();
-    if (!folderWithPex.isPresent()) {
+    if (folderWithPex.isEmpty()) {
       LOG.warn(PantsBundle.message("pants.library.no.pex.folder"));
       return Optional.empty();
     }

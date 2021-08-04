@@ -42,7 +42,6 @@ import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -50,11 +49,8 @@ import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.PsiFile;
-import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
-import com.intellij.util.ObjectUtils;
 import com.intellij.util.PathUtil;
-import com.intellij.util.Processor;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.execution.ParametersListUtil;
 import com.intellij.util.ui.UIUtil;
@@ -65,55 +61,39 @@ import com.twitter.intellij.pants.model.PantsSourceType;
 import com.twitter.intellij.pants.model.PantsTargetAddress;
 import com.twitter.intellij.pants.model.PantsVersion;
 import com.twitter.intellij.pants.model.SimpleExportResult;
+import com.twitter.intellij.pants.service.project.metadata.ModuleTargetMetadataStorage;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.jps.model.JpsProject;
-import org.jetbrains.jps.model.java.JpsJavaSdkType;
-import org.jetbrains.jps.model.library.JpsLibrary;
-import org.jetbrains.jps.model.library.impl.sdk.JpsSdkImpl;
-import org.jetbrains.jps.model.library.sdk.JpsSdkReference;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PantsUtil {
+
   public static final Gson gson = new Gson();
-  public static final Type TYPE_LIST_STRING = new TypeToken<List<String>>() {
-  }.getType();
-  public static final Type TYPE_SET_STRING = new TypeToken<Set<String>>() {
-  }.getType();
-  public static final Type TYPE_MAP_STRING_INTEGER = new TypeToken<Map<String, Integer>>() {
-  }.getType();
-  public static final ScheduledExecutorService scheduledThreadPool = Executors.newSingleThreadScheduledExecutor(
-    new ThreadFactory() {
-      @Override
-      public Thread newThread(@NotNull Runnable r) {
-        return new Thread(r, "Pants-Plugin-Pool");
-      }
-    });
+  public static final Type TYPE_LIST_STRING = new TypeToken<List<String>>() {}.getType();
+
+  public static final ScheduledExecutorService scheduledThreadPool =
+          Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Pants-Plugin-Pool"));
 
   private static final Logger LOG = Logger.getInstance(PantsUtil.class);
   private static final List<String> PYTHON_PLUGIN_IDS = ContainerUtil.immutableList("PythonCore", "Pythonid");
@@ -121,13 +101,13 @@ public class PantsUtil {
   private static final String PEX_RELATIVE_PATH = ".pants.d/bin/pants.pex";
 
   /**
-   * This aims to prepares for any breakage we might introduce from pants side, in which case we can adjust the version
+   * This aims to prepare for any breakage we might introduce from pants side, in which case we can adjust the version
    * of Pants `idea-plugin` goal to be greater than 0.1.0.
    *
    * @see <a href="https://github.com/pantsbuild/pants/blob/d31ec5b4b1fb4f91e5beb685539ea14278dc62cf/src/python/pants/backend/project_info/tasks/idea_plugin_gen.py#L28">Pants `idea-plugin` goal version</a>
    */
-  private static final String PANTS_IDEA_PLUGIN_VERESION_MIN = "0.0.1";
-  private static final String PANTS_IDEA_PLUGIN_VERESION_MAX = "0.1.0";
+  private static final String PANTS_IDEA_PLUGIN_VERSION_MIN = "0.0.1";
+  private static final String PANTS_IDEA_PLUGIN_VERSION_MAX = "0.1.0";
 
   /**
    * @param vFile a virtual file pointing at either a file or a directory
@@ -422,33 +402,12 @@ public class PantsUtil {
     }
   }
 
-  public static String removeWhitespace(@NotNull String text) {
-    return text.replaceAll("\\s", "");
-  }
-
-  public static boolean isGeneratableFile(@NotNull String path) {
-    // todo(fkorotkov): make it configurable or get it from patns.
-    // maybe mark target as a target that generates sources and
-    // we need to refresh the project for any change in the corresponding module
-    // https://github.com/pantsbuild/intellij-pants-plugin/issues/13
-    return FileUtilRt.extensionEquals(path, PantsConstants.THRIFT_EXT) ||
-           FileUtilRt.extensionEquals(path, PantsConstants.ANTLR_EXT) ||
-           FileUtilRt.extensionEquals(path, PantsConstants.ANTLR_4_EXT) ||
-           FileUtilRt.extensionEquals(path, PantsConstants.PROTOBUF_EXT);
-  }
-
   @NotNull
   @Nls
   public static String getCanonicalModuleName(@NotNull @NonNls String targetName) {
     // Do not use ':' because it is used as a separator in a classpath
     // while running the app. As well as path separators
     return replaceDelimitersInTargetName(targetName, '_');
-  }
-
-  @NotNull
-  @Nls
-  public static String getCanonicalTargetId(@NotNull @NonNls String targetName) {
-    return replaceDelimitersInTargetName(targetName, '.');
   }
 
   private static String replaceDelimitersInTargetName(@NotNull @NonNls String targetName, char delimeter) {
@@ -460,14 +419,13 @@ public class PantsUtil {
     if (module == null || !isPantsModule(module)) {
       return Collections.emptyList();
     }
-    final String targets = module.getOptionValue(PantsConstants.PANTS_TARGET_ADDRESSES_KEY);
-    if (targets == null) {
+
+    final ModuleTargetMetadataStorage.State state = module.getService(ModuleTargetMetadataStorage.class).getState();
+    if (state == null) {
       return Collections.emptyList();
     }
-    return ContainerUtil.mapNotNull(
-      hydrateTargetAddresses(targets),
-      PantsTargetAddress::fromString
-    );
+
+    return ContainerUtil.mapNotNull(state.targetAddresses, PantsTargetAddress::fromString);
   }
 
   @NotNull
@@ -524,8 +482,8 @@ public class PantsUtil {
     if (version == null) {
       return false;
     }
-    if (versionCompare(version, PANTS_IDEA_PLUGIN_VERESION_MIN) < 0 ||
-        versionCompare(version, PANTS_IDEA_PLUGIN_VERESION_MAX) > 0
+    if (versionCompare(version, PANTS_IDEA_PLUGIN_VERSION_MIN) < 0 ||
+        versionCompare(version, PANTS_IDEA_PLUGIN_VERSION_MAX) > 0
     ) {
       Messages.showInfoMessage(project, PantsBundle.message("pants.idea.plugin.goal.version.unsupported"), "Version Error");
       return false;
@@ -552,10 +510,6 @@ public class PantsUtil {
     }
   }
 
-  public static boolean isResource(PantsSourceType sourceType) {
-    return sourceType == PantsSourceType.RESOURCE || sourceType == PantsSourceType.TEST_RESOURCE;
-  }
-
   public static Optional<String> findModuleAddress(@Nullable Module module) {
     if (module == null) return Optional.empty();
 
@@ -568,37 +522,11 @@ public class PantsUtil {
   }
 
   public static Optional<VirtualFile> findBUILDFileForModule(@NotNull Module module) {
-
-    final Optional<VirtualFile> virtualFile =
-      findModuleAddress(module)
+    final Optional<VirtualFile> virtualFile = findModuleAddress(module)
         .map(VfsUtil::pathToUrl)
         .flatMap(s -> Optional.ofNullable(VirtualFileManager.getInstance().findFileByUrl(s)));
 
     return virtualFile.flatMap(file -> isBUILDFile(file) ? Optional.of(file) : findBUILDFile(virtualFile.orElse(null)));
-  }
-
-  public static <K, V1, V2> Map<K, V2> mapValues(Map<K, V1> map, Function<V1, V2> fun) {
-    final Map<K, V2> result = new HashMap<>(map.size());
-    for (K key : map.keySet()) {
-      final V1 originalValue = map.get(key);
-      final V2 newValue = fun.fun(originalValue);
-      if (newValue != null) {
-        result.put(key, newValue);
-      }
-    }
-    return result;
-  }
-
-  public static <K, V> Map<K, V> filterByValue(Map<K, V> map, Condition<V> condition) {
-    final Map<K, V> result = new HashMap<>(map.size());
-    for (Map.Entry<K, V> entry : map.entrySet()) {
-      final K key = entry.getKey();
-      final V value = entry.getValue();
-      if (condition.value(value)) {
-        result.put(key, value);
-      }
-    }
-    return result;
   }
 
   public static Optional<String> getRelativeProjectPath(@NotNull String projectFile) {
@@ -629,20 +557,8 @@ public class PantsUtil {
     return ExternalSystemApiUtil.isExternalSystemAwareModule(PantsConstants.BSP_SYSTEM_ID, module);
   }
 
-
   public static boolean isBspProject(Project project) {
     return Arrays.stream(ModuleManager.getInstance(project).getModules()).anyMatch(PantsUtil::isBspModule);
-  }
-
-  public static Optional<VirtualFile> findFileByAbsoluteOrRelativePath(
-    @NotNull String fileOrDirPath,
-    @NotNull Project project
-  ) {
-    final VirtualFile absoluteVirtualFile = VirtualFileManager.getInstance().findFileByUrl(VfsUtil.pathToUrl(fileOrDirPath));
-    if (absoluteVirtualFile != null) {
-      return Optional.of(absoluteVirtualFile);
-    }
-    return findFileRelativeToBuildRoot(project, fileOrDirPath);
   }
 
   public static Optional<VirtualFile> findFileRelativeToBuildRoot(@NotNull Project project, @NotNull String fileOrDirPath) {
@@ -659,44 +575,10 @@ public class PantsUtil {
     return directory.flatMap(file -> Optional.ofNullable(file.findFileByRelativePath(fileOrDirPath)));
   }
 
-  /**
-   * {@code processor} should return false if we don't want to step into the directory.
-   */
-  public static void traverseDirectoriesRecursively(@NotNull File root, @NotNull Processor<File> processor) {
-    final LinkedList<File> queue = new LinkedList<>();
-    queue.add(root);
-    while (!queue.isEmpty()) {
-      final File file = queue.removeFirst();
-      if (file.isFile()) {
-        continue;
-      }
-      if (!processor.process(file)) {
-        continue;
-      }
-
-      final File[] children = file.listFiles();
-      if (children != null) {
-        ContainerUtil.addAll(queue, children);
-      }
-    }
-  }
-
   public static Optional<String> getPathFromAddress(@NotNull Module module, @NotNull String key) {
+    // fix me!
     final String address = module.getOptionValue(key);
     return PantsTargetAddress.extractPath(address);
-  }
-
-  public static void copyDirContent(@NotNull File fromDir, @NotNull File toDir) throws IOException {
-    final File[] children = ObjectUtils.notNull(fromDir.listFiles(), ArrayUtil.EMPTY_FILE_ARRAY);
-    for (File child : children) {
-      final File target = new File(toDir, child.getName());
-      if (child.isFile()) {
-        FileUtil.copy(child, target);
-      }
-      else {
-        FileUtil.copyDir(child, target, false);
-      }
-    }
   }
 
   public static ProcessOutput getCmdOutput(
@@ -774,23 +656,6 @@ public class PantsUtil {
   }
 
   /**
-   * @param project JpsProject
-   * @return Path to IDEA Project JDK if exists, else null
-   */
-  @Nullable
-  public static String getJdkPathFromExternalBuilder(@NotNull JpsProject project) {
-    JpsSdkReference<?> sdkReference = project.getSdkReferencesTable().getSdkReference(JpsJavaSdkType.INSTANCE);
-    if (sdkReference != null) {
-      String sdkName = sdkReference.getSdkName();
-      JpsLibrary lib = project.getModel().getGlobal().getLibraryCollection().findLibrary(sdkName);
-      if (lib != null && lib.getProperties() instanceof JpsSdkImpl) {
-        return ((JpsSdkImpl<?>) lib.getProperties()).getHomePath();
-      }
-    }
-    return null;
-  }
-
-  /**
    * @return Path to IDEA Project JDK if exists, else null
    */
   @Nullable
@@ -819,23 +684,6 @@ public class PantsUtil {
     else {
       throw new Exception("No IDEA Project JDK Found");
     }
-  }
-
-  @NotNull
-  public static Set<String> hydrateTargetAddresses(@NotNull String addresses) {
-    // There may be serialization behavior change on {@link com.intellij.openapi.module.Module.setOption}
-    // ["abc/efg"] will get serialized correctly by gson.toJson to "[\"abc/123\"]".
-    // However when data is read back from {@link com.intellij.openapi.module.Module.getOptionValue},
-    // it becomes "[&amp;quot;abc/123&amp;quot;]", then gson.fromJson would fail on it.
-    String tmp = addresses
-      .replace("&amp;", "&")
-      .replace("&quot;", "\"");
-    return gson.fromJson(tmp, TYPE_SET_STRING);
-  }
-
-  @NotNull
-  public static String dehydrateTargetAddresses(@NotNull Set<String> addresses) {
-    return gson.toJson(addresses);
   }
 
   public static boolean isGenTarget(@NotNull String address) {

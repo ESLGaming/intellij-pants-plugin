@@ -58,6 +58,11 @@ tasks {
         untilBuild.set(properties("pluginUntilBuild"))
     }
 
+    runIde {
+        maxHeapSize = "4G"
+        jvmArgs = listOf("-Dpants.metrics.enable=true", "-Dvcs.log.index.git=false")
+    }
+
     runPluginVerifier {
         ideVersions.set(properties("pluginVerifierIdeVersions").split(',').map(String::trim).filter(String::isNotEmpty))
     }

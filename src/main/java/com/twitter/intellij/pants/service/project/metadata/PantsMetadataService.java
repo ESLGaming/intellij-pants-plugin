@@ -3,35 +3,23 @@
 
 package com.twitter.intellij.pants.service.project.metadata;
 
-import com.google.gson.Gson;
 import com.intellij.openapi.externalSystem.ExternalSystemModulePropertyManager;
 import com.intellij.openapi.externalSystem.model.DataNode;
 import com.intellij.openapi.externalSystem.model.Key;
-import com.intellij.openapi.externalSystem.model.ProjectKeys;
-import com.intellij.openapi.externalSystem.model.project.ModuleData;
 import com.intellij.openapi.externalSystem.model.project.ProjectData;
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider;
-import com.intellij.openapi.externalSystem.service.project.manage.ProjectDataService;
-import com.intellij.openapi.externalSystem.util.ExternalSystemConstants;
+import com.intellij.openapi.externalSystem.service.project.manage.AbstractModuleDataService;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Computable;
 import com.twitter.intellij.pants.service.project.PantsResolver;
 import com.twitter.intellij.pants.settings.PantsSettings;
 import com.twitter.intellij.pants.util.PantsConstants;
-import com.twitter.intellij.pants.util.PantsUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Collections;
 
-import static com.intellij.openapi.externalSystem.service.project.manage.AbstractModuleDataService.MODULE_DATA_KEY;
-
-
-public class PantsMetadataService implements ProjectDataService<TargetMetadata, Module> {
-  private static final Gson gson = new Gson();
+public class PantsMetadataService extends AbstractModuleDataService<TargetMetadata> {
 
   @NotNull
   @Override
@@ -40,54 +28,18 @@ public class PantsMetadataService implements ProjectDataService<TargetMetadata, 
   }
 
   @Override
-  public void importData(
-    Collection<? extends DataNode<TargetMetadata>> toImport,
-    @Nullable ProjectData projectData,
-    @NotNull Project project,
-    @NotNull IdeModifiableModelsProvider modelsProvider
-  ) {
+  public void importData(@NotNull Collection<? extends DataNode<TargetMetadata>> toImport,
+                         @Nullable ProjectData projectData,
+                         @NotNull Project project,
+                         @NotNull IdeModifiableModelsProvider modelsProvider) {
     PantsSettings.getInstance(project).setResolverVersion(PantsResolver.VERSION);
-    for (DataNode<TargetMetadata> node : toImport) {
-      final TargetMetadata metadata = node.getData();
-      final Module module = modelsProvider.findIdeModule(metadata.getModuleName());
-      if (module != null) {
-        setModuleOptions(module, node);
-        ExternalSystemModulePropertyManager.getInstance(module).setExternalModuleType(PantsConstants.PANTS_TARGET_MODULE_TYPE);
-      }
-    }
+    super.importData(toImport, projectData, project, modelsProvider);
   }
 
+  @Override
   protected void setModuleOptions(Module module, DataNode<TargetMetadata> moduleDataNode) {
-    TargetMetadata moduleData = moduleDataNode.getData();
-    module.putUserData(MODULE_DATA_KEY, moduleData);
-    module.setOption(PantsConstants.PANTS_LIBRARY_EXCLUDES_KEY, PantsUtil.dehydrateTargetAddresses(moduleData.getLibraryExcludes()));
-    module.setOption(PantsConstants.PANTS_TARGET_ADDRESSES_KEY, PantsUtil.dehydrateTargetAddresses(moduleData.getTargetAddresses()));
-    module.setOption(PantsConstants.PANTS_TARGET_ADDRESS_INFOS_KEY, gson.toJson(moduleData.getTargetAddressInfoSet()));
-    module.setOption(PantsConstants.PANTS_OPTION_LINKED_PROJECT_PATH, Paths.get(moduleData.getLinkedExternalProjectPath()).normalize().toString());
-
-    ExternalSystemModulePropertyManager.getInstance(module).setExternalOptions(moduleData.getOwner(), moduleData, moduleDataNode.getData(ProjectKeys.PROJECT));
-  }
-
-  @Override
-  public @NotNull Computable<Collection<Module>> computeOrphanData(
-    Collection<? extends DataNode<TargetMetadata>> collection,
-    @NotNull ProjectData data,
-    @NotNull Project project,
-    @NotNull IdeModifiableModelsProvider provider
-  ) {
-    return Collections::emptyList;
-  }
-
-  @Override
-  public void removeData(
-    Computable<? extends Collection<? extends Module>> toRemove,
-    Collection<? extends DataNode<TargetMetadata>> collection,
-    @NotNull ProjectData data,
-    @NotNull Project project,
-    @NotNull IdeModifiableModelsProvider provider
-  ) {
-    for (Module module : toRemove.compute()) {
-      module.clearOption(PantsConstants.PANTS_TARGET_ADDRESSES_KEY);
-    }
+    super.setModuleOptions(module, moduleDataNode);
+    module.getService(ModuleTargetMetadataStorage.class).loadState(new ModuleTargetMetadataStorage.State(moduleDataNode.getData()));
+    ExternalSystemModulePropertyManager.getInstance(module).setExternalModuleType(PantsConstants.PANTS_TARGET_MODULE_TYPE);
   }
 }
