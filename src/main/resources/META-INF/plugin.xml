@@ -130,7 +130,6 @@
         <runConfigurationExtension implementation="com.twitter.intellij.pants.execution.PantsClasspathRunConfigurationExtension"/>
         <configurationType implementation="com.twitter.intellij.pants.execution.PantsExternalTaskConfigurationType"/>
         <runConfigurationProducer implementation="com.twitter.intellij.pants.execution.PantsJUnitTestRunConfigurationProducer"/>
-        <runConfigurationProducer implementation="com.twitter.intellij.pants.execution.PantsMainRunConfigurationProducer"/>
 
         <!--Listener to be called after resolving projects finishes. -->
         <externalSystemTaskNotificationListener

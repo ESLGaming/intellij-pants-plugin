@@ -14,6 +14,7 @@
     <bspResolverNamingExtension implementation="com.twitter.intellij.pants.service.scala.PantsBspResolverNamingExtension"/>
     <projectOpenProcessor implementation="com.twitter.intellij.pants.service.project.FastpassProjectOpenProcessor" order="first"/>
     <projectImportProvider implementation="com.twitter.intellij.pants.service.project.wizard.FastpassProjectImportProvider"/>
+    <runConfigurationProducer implementation="com.twitter.intellij.pants.execution.PantsMainRunConfigurationProducer"/>
   </extensions>
 
   <extensions defaultExtensionNs="com.eslgaming.engineering.intellij-pants-plugin">
