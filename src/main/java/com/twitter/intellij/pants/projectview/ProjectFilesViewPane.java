@@ -101,7 +101,7 @@ public class ProjectFilesViewPane extends AbstractProjectViewPSIPane {
   @NotNull
   @Override
   protected ProjectViewTree createTree(DefaultTreeModel treeModel) {
-    return new ProjectViewTree(myProject, treeModel) {
+    return new ProjectViewTree(treeModel) {
       @Override
       public DefaultMutableTreeNode getSelectedNode() {
         return ProjectFilesViewPane.this.getSelectedNode();

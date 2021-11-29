@@ -656,20 +656,6 @@ public class PantsUtil {
   }
 
   /**
-   * @return Path to IDEA Project JDK if exists, else null
-   */
-  @Nullable
-  public static String getJdkPathFromIntelliJCore() {
-    // Followed example in com.twitter.intellij.pants.testFramework.PantsIntegrationTestCase.setUpInWriteAction()
-    final Sdk sdk = JavaAwareProjectJdkTableImpl.getInstanceEx().getInternalJdk();
-    String javaHome = null;
-    if (sdk.getHomeDirectory() != null) {
-      javaHome = sdk.getHomeDirectory().getParent().getPath();
-    }
-    return javaHome;
-  }
-
-  /**
    * @param jdkPath path to IDEA Project JDK
    * @return --jvm-distributions-paths with the parameter if jdkPath is not null,
    * otherwise the flag with empty parameter so user can tell there is issue finding the IDEA project JDK.

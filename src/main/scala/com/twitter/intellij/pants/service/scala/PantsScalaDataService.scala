@@ -55,7 +55,7 @@ class PantsScalaDataService extends ProjectDataService[ScalaModelData, Library] 
                                                    scalaNode.getData(ProjectKeys.MODULE).getExternalName))
 
     if (!scalaLibrary.isScalaSdk) {
-      val properties = ScalaLibraryProperties(Some(compilerVersion.presentation))
+      val properties = ScalaLibraryProperties(Some(compilerVersion.presentation), Seq.empty, Seq.empty)
       properties.compilerClasspath = scalaData.getClasspath.asScala.toSeq.map(new File(_))
       val modifiableModelEx = modelsProvider.getModifiableLibraryModel(scalaLibrary).asInstanceOf[ModifiableModelEx]
       modifiableModelEx.setKind(ScalaLibraryType().getKind)

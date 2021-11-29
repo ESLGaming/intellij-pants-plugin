@@ -10,6 +10,7 @@ import com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.twitter.intellij.pants.PantsBundle;
@@ -45,7 +46,7 @@ public class ProjectFilesViewProjectNode extends AbstractProjectNode {
   @Override
   public Collection<? extends AbstractTreeNode<?>> getChildren() {
     final Optional<VirtualFile> buildRoot = PantsUtil.findBuildRoot(myProject);
-    final VirtualFile projectDir = buildRoot.orElse(myProject.getBaseDir());
+    final VirtualFile projectDir = buildRoot.orElse(ProjectUtil.guessProjectDir(myProject));
     if (projectDir == null) {
       LOG.warn(String.format("Couldn't find project directory for project '%s'", myProject.getName()));
       return Collections.emptyList();
@@ -62,7 +63,7 @@ public class ProjectFilesViewProjectNode extends AbstractProjectNode {
 
   @Override
   public boolean contains(@NotNull VirtualFile file) {
-    final Optional<VirtualFile> projectBuildRoot = PantsUtil.findBuildRoot(myProject.getBaseDir());
+    final Optional<VirtualFile> projectBuildRoot = PantsUtil.findBuildRoot(ProjectUtil.guessProjectDir(myProject));
     return super.contains(file) ||
            (projectBuildRoot.isPresent() && VfsUtil.isAncestor(projectBuildRoot.get(), file, true));
   }
