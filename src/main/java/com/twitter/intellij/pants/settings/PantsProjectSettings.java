@@ -29,9 +29,7 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
   }
 
   public int incrementalImportDepth;
-  public boolean useIdeaProjectJdk;
   public boolean importSourceDepsAsJars;
-  public boolean useIntellijCompiler;
 
 
   /**
@@ -40,9 +38,7 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
    * @param externalProjectPath       path to the Pants project.
    * @param libsWithSources           whether to import sources and docs when resolving for jars.
    * @param isEnableIncrementalImport whether to enabled incremental import.
-   * @param isUseIdeaProjectJdk       whether use IDEA project JDK to compile Pants project.
    * @param isImportSourceDepsAsJars  whether to import source dependencies as frozen jars.
-   * @param isUseIntellijCompiler     whether to use the IntelliJ compiler to compile the project (as opposed to using pants).
    */
   public PantsProjectSettings(
     List<String> allAvailableTargetSpecs,
@@ -51,9 +47,7 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
     boolean libsWithSources,
     boolean isEnableIncrementalImport,
     int incrementalImportDepth,
-    boolean isUseIdeaProjectJdk,
-    boolean isImportSourceDepsAsJars,
-    boolean isUseIntellijCompiler
+    boolean isImportSourceDepsAsJars
   ) {
     setExternalProjectPath(externalProjectPath);
     mySelectedTargetSpecs = selectedTargetSpecs;
@@ -61,9 +55,7 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
     this.libsWithSources = libsWithSources;
     incrementalImportEnabled = isEnableIncrementalImport;
     this.incrementalImportDepth = incrementalImportDepth;
-    useIdeaProjectJdk = isUseIdeaProjectJdk;
     importSourceDepsAsJars = isImportSourceDepsAsJars;
-    useIdeaProjectJdk = isUseIntellijCompiler;
   }
 
   public PantsProjectSettings() {
@@ -85,9 +77,7 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
            && Objects.equals(mySelectedTargetSpecs, other.mySelectedTargetSpecs)
            && Objects.equals(incrementalImportEnabled, other.incrementalImportEnabled)
            && Objects.equals(incrementalImportDepth, other.incrementalImportDepth)
-           && Objects.equals(useIdeaProjectJdk, other.useIdeaProjectJdk)
-           && Objects.equals(importSourceDepsAsJars, other.importSourceDepsAsJars)
-           && Objects.equals(useIntellijCompiler, other.useIntellijCompiler);
+           && Objects.equals(importSourceDepsAsJars, other.importSourceDepsAsJars);
   }
 
   @NotNull
@@ -108,9 +98,7 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
       ((PantsProjectSettings) receiver).libsWithSources = libsWithSources;
       ((PantsProjectSettings) receiver).incrementalImportDepth = incrementalImportDepth;
       ((PantsProjectSettings) receiver).incrementalImportEnabled = incrementalImportEnabled;
-      ((PantsProjectSettings) receiver).useIdeaProjectJdk = useIdeaProjectJdk;
       ((PantsProjectSettings) receiver).importSourceDepsAsJars = importSourceDepsAsJars;
-      ((PantsProjectSettings) receiver).useIntellijCompiler = useIntellijCompiler;
     }
   }
 

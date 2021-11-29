@@ -5,12 +5,7 @@ package com.twitter.intellij.pants.components.impl;
 
 import com.google.gson.Gson;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.notification.EventLog;
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationDisplayType;
-import com.intellij.notification.NotificationGroup;
-import com.intellij.notification.NotificationListener;
-import com.intellij.notification.NotificationType;
+import com.intellij.notification.*;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.diagnostic.Logger;
@@ -24,7 +19,6 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.twitter.intellij.pants.bsp.FastpassUtils;
 import com.twitter.intellij.pants.bsp.PantsBspData;
-import com.twitter.intellij.pants.util.PantsConstants;
 import com.twitter.intellij.pants.util.PantsUtil;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.NotNull;
@@ -155,7 +149,7 @@ public class FastpassUpdater {
 
   private static void showUpdateNotification(Project project, String systemVersion, FastpassData data) {
     if (!hasNotification(project)) {
-      Notification notification = new NotificationGroup(PantsConstants.PANTS, NotificationDisplayType.STICKY_BALLOON, true)
+      Notification notification = NotificationGroupManager.getInstance().getNotificationGroup("pants")
         .createNotification(
           NOTIFICATION_TITLE,
           "<a href='" + NOTIFICATION_HREF + "'>Update</a> fastpass to version: " + systemVersion,

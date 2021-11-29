@@ -20,17 +20,6 @@ Build plugin:
     paths:
       - build/distributions/*.zip
 
-Publish plugin:
-  image: ci.docker.artstore.code.esl.systems/base:latest
-  stage: publish
-  script:
-    - |
-      for plugin in $(ls build/distributions/*.zip); do
-        name=$(basename $plugin)
-        curl -vv -X PUT -T ${plugin} "https://artstore.code.esl.systems/artifactory/jetbrains-plugins/plugins/${name}"
-      done
-  when: manual
-
 Publish to Jetbrains:
   image: base.docker.artstore.code.esl.systems/buster/java11:latest
   stage: publish

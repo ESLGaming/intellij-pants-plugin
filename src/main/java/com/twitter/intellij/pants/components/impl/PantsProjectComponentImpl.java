@@ -126,11 +126,9 @@ public class PantsProjectComponentImpl implements ProjectManagerListener {
            */
           final List<String> targetSpecs = PantsUtil.gson.fromJson(serializedTargets, PantsUtil.TYPE_LIST_STRING);
           final boolean loadLibsAndSources = true;
-          final boolean useIdeaProjectJdk = false;
-          final boolean useIntellijCompiler = false;
           final PantsProjectSettings pantsProjectSettings =
             new PantsProjectSettings(
-              targetSpecs, targetSpecs, projectPath, loadLibsAndSources, enableIncrementalImport.isPresent(), enableIncrementalImport.orElse(0), useIdeaProjectJdk, enableExportDepAsJar, useIntellijCompiler);
+              targetSpecs, targetSpecs, projectPath, loadLibsAndSources, enableIncrementalImport.isPresent(), enableIncrementalImport.orElse(0), enableExportDepAsJar);
 
           /*
            * Following procedures in {@link com.intellij.openapi.externalSystem.util.ExternalSystemUtil#refreshProjects}:
@@ -217,10 +215,7 @@ public class PantsProjectComponentImpl implements ProjectManagerListener {
               if (!PantsUtil.isPantsProject(project) && !PantsUtil.isSeedPantsProject(project)) {
                 return;
               }
-              final PantsSettings pantsSettings = (PantsSettings) ExternalSystemApiUtil.getSettings(project, PantsConstants.SYSTEM_ID);
-              if (!pantsSettings.isUseIntellijCompiler()) {
-                PantsMakeBeforeRun.replaceDefaultMakeWithPantsMake(settings.getConfiguration());
-              }
+              PantsMakeBeforeRun.replaceDefaultMakeWithPantsMake(settings.getConfiguration());
               PantsMakeBeforeRun.setRunConfigurationWorkingDirectory(settings.getConfiguration());
             }
           });
@@ -231,7 +226,6 @@ public class PantsProjectComponentImpl implements ProjectManagerListener {
 
   /**
    * This will add buildroot/.idea, buildroot/.pants.d to Version Control -> Ignored Files.
-   * This is currently impossible to test because {@link com.intellij.openapi.externalSystem.test.ExternalSystemTestCase}
    * put project file in a temp dir unrelated to where the repo resides.
    * TODO: make sure it reflects on GUI immediately without a project reload.
    */

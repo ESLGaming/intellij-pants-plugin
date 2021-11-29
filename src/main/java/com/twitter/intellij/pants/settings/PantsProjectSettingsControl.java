@@ -81,9 +81,7 @@ public class PantsProjectSettingsControl extends AbstractExternalProjectSettings
   private JBCheckBox myLibsWithSourcesCheckBox = new JBCheckBox(PantsBundle.message("pants.settings.text.with.sources.and.docs"));
   private JSpinner myImportDepthSpinner = newImportDepthSpinner();
   private JBCheckBox myEnableIncrementalImportCheckBox = newEnableIcrementalImportCheckbox();
-  private JBCheckBox myUseIdeaProjectJdkCheckBox = new JBCheckBox(PantsBundle.message("pants.settings.text.with.jdk.enforcement"));
   private JBCheckBox myImportSourceDepsAsJarsCheckBox = new JBCheckBox(PantsBundle.message("pants.settings.text.import.deps.as.jars"));
-  private JBCheckBox myUseIntellijCompilerCheckBox = new JBCheckBox(PantsBundle.message("pants.settings.text.use.intellij.compiler"));
   private JPanel myImportDepthPanel = importDepthPanel(myImportDepthSpinner);
 
   @VisibleForTesting
@@ -113,13 +111,7 @@ public class PantsProjectSettingsControl extends AbstractExternalProjectSettings
     myLibsWithSourcesCheckBox.setSelected(initialSettings.libsWithSources);
     myEnableIncrementalImportCheckBox.setSelected(initialSettings.incrementalImportEnabled);
     myImportDepthSpinner.setValue(initialSettings.incrementalImportDepth);
-    myUseIdeaProjectJdkCheckBox.setSelected(initialSettings.useIdeaProjectJdk);
     myImportSourceDepsAsJarsCheckBox.setSelected(initialSettings.importSourceDepsAsJars);
-    myUseIntellijCompilerCheckBox.setSelected(initialSettings.useIntellijCompiler);
-    LinkLabel<?> intellijCompilerHelpMessage = LinkLabel.create(
-      PantsBundle.message("pants.settings.text.use.intellij.compiler.help.messasge"),
-      () -> BrowserUtil.browse(PantsBundle.message("pants.settings.text.use.intellij.compiler.help.messasge.link"))
-    );
 
     myTargetSpecsBox.setItems(initialSettings.getAllAvailableTargetSpecs(), x -> x);
     initialSettings.getSelectedTargetSpecs().forEach(spec -> myTargetSpecsBox.setItemSelected(spec, true));
@@ -130,10 +122,7 @@ public class PantsProjectSettingsControl extends AbstractExternalProjectSettings
       myLibsWithSourcesCheckBox,
       myEnableIncrementalImportCheckBox,
       myImportDepthPanel,
-      myUseIdeaProjectJdkCheckBox,
       myImportSourceDepsAsJarsCheckBox,
-      myUseIntellijCompilerCheckBox,
-      intellijCompilerHelpMessage,
       new JBLabel(PantsBundle.message("pants.settings.text.targets")),
       new JBScrollPane(myTargetSpecsBox)
     );
@@ -173,9 +162,7 @@ public class PantsProjectSettingsControl extends AbstractExternalProjectSettings
       myLibsWithSourcesCheckBox.isSelected(),
       myEnableIncrementalImportCheckBox.isSelected(),
       (Integer)(myImportDepthSpinner.getValue()),
-      myUseIdeaProjectJdkCheckBox.isSelected(),
-      myImportSourceDepsAsJarsCheckBox.isSelected(),
-      myUseIntellijCompilerCheckBox.isSelected()
+      myImportSourceDepsAsJarsCheckBox.isSelected()
     );
 
     newSettings.setProjectName(myNameField.getText());
@@ -315,9 +302,7 @@ public class PantsProjectSettingsControl extends AbstractExternalProjectSettings
     settings.libsWithSources = myLibsWithSourcesCheckBox.isSelected();
     settings.incrementalImportEnabled = myEnableIncrementalImportCheckBox.isSelected();
     settings.incrementalImportDepth = (Integer) (myImportDepthSpinner.getValue());
-    settings.useIdeaProjectJdk = myUseIdeaProjectJdkCheckBox.isSelected();
     settings.importSourceDepsAsJars = myImportSourceDepsAsJarsCheckBox.isSelected();
-    settings.useIntellijCompiler = myUseIntellijCompilerCheckBox.isSelected();
   }
 
   @NotNull

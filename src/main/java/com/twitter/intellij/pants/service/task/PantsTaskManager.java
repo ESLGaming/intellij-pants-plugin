@@ -160,15 +160,7 @@ public class PantsTaskManager implements ExternalSystemTaskManager<PantsExecutio
 
       commandLine.addParameter(PantsConstants.PANTS_CLI_OPTION_NO_TEST_JUNIT_TIMEOUTS);
     }
-    if (settings.isUseIdeaProjectJdk()) {
-      try {
-        commandLine.addParameter(PantsUtil.getJvmDistributionPathParameter(PantsUtil.getJdkPathFromIntelliJCore()));
-      }
-      catch (Exception e) {
-        throw new ExternalSystemException(e);
-      }
-    }
-    /**
+    /*
      * Goals.
      */
     commandLine.addParameters(taskNames);

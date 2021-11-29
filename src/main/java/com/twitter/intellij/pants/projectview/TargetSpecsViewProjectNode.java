@@ -11,6 +11,7 @@ import com.intellij.openapi.externalSystem.settings.AbstractExternalSystemSettin
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -108,7 +109,7 @@ public class TargetSpecsViewProjectNode extends AbstractProjectNode {
 
   @Override
   public boolean contains(@NotNull VirtualFile file) {
-    final Optional<VirtualFile> projectBuildRoot = PantsUtil.findBuildRoot(myProject.getBaseDir());
+    final Optional<VirtualFile> projectBuildRoot = PantsUtil.findBuildRoot(ProjectUtil.guessProjectDir(myProject));
     return super.contains(file) ||
            (projectBuildRoot.isPresent() && VfsUtil.isAncestor(projectBuildRoot.get(), file, true));
   }

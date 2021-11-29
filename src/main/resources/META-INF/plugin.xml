@@ -117,7 +117,7 @@
         <projectConfigurable groupId="build.tools" groupWeight="110" id="reference.settingsdialog.project.pants"
                              instance="com.twitter.intellij.pants.settings.PantsConfigurable"
                              key="pants.name" bundle="messages.PantsBundle"/>
-        <actionConfigurationCustomizer implementation="com.twitter.intellij.pants.components.impl.PantsActionConfigurationCustomizer"/>
+        <dynamicActionConfigurationCustomizer implementation="com.twitter.intellij.pants.components.impl.PantsActionConfigurationCustomizer"/>
         <projectOpenProcessor implementation="com.twitter.intellij.pants.service.project.PantsProjectOpenProcessor" order="last"/>
         <projectImportProvider
                 implementation="com.twitter.intellij.pants.service.project.wizard.PantsProjectImportProvider"/>
@@ -158,6 +158,8 @@
         <projectService serviceImplementation="com.twitter.intellij.pants.ui.PantsConsoleManager"/>
 
         <moduleService serviceImplementation="com.twitter.intellij.pants.service.project.metadata.ModuleTargetMetadataStorage"/>
+
+        <notificationGroup id="pants" displayType="STICKY_BALLOON" />
     </extensions>
 
     <applicationListeners>

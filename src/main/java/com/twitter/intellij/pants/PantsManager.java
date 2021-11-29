@@ -117,10 +117,8 @@ public class PantsManager implements
             pantsProjectSettings.getProjectName(),
             pantsProjectSettings.getSelectedTargetSpecs(),
             pantsProjectSettings.libsWithSources,
-            pantsProjectSettings.useIdeaProjectJdk,
             pantsProjectSettings.importSourceDepsAsJars,
-            pantsProjectSettings.incrementalImportEnabled ? Optional.of(pantsProjectSettings.incrementalImportDepth) : Optional.empty(),
-            pantsProjectSettings.useIntellijCompiler
+            pantsProjectSettings.incrementalImportEnabled ? Optional.of(pantsProjectSettings.incrementalImportDepth) : Optional.empty()
           );
         }
         else {

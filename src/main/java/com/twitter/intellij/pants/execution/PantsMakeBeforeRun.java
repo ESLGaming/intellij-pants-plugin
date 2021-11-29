@@ -249,14 +249,8 @@ public class PantsMakeBeforeRun extends ExternalSystemBeforeRunTaskProvider {
 
     PantsSettings settings = PantsSettings.getInstance(currentProject);
     try {
-      String javaHome;
-      if (settings.isUseIdeaProjectJdk()) {
-        javaHome = PantsUtil.getJdkPathFromIntelliJCore();
-      }
-      else {
-        Sdk sdk = ProjectRootManager.getInstance(currentProject).getProjectSdk();
-        javaHome = sdk.getHomeDirectory().getPath();
-      }
+      Sdk sdk = ProjectRootManager.getInstance(currentProject).getProjectSdk();
+      String javaHome = sdk.getHomeDirectory().getPath();
 
       commandLine.addParameter(PantsUtil.getJvmDistributionPathParameter(javaHome));
     }

@@ -7,6 +7,7 @@ import com.intellij.ide.SelectInContext;
 import com.intellij.ide.SelectInManager;
 import com.intellij.ide.impl.ProjectViewSelectInTarget;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectUtil;
 import com.intellij.openapi.roots.ProjectFileIndex;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -55,7 +56,7 @@ public class TargetSpecsSelectInTarget extends ProjectViewSelectInTarget {
           return true;
         }
 
-        final Optional<VirtualFile> buildRoot = PantsUtil.findBuildRoot(myProject.getBaseDir());
+        final Optional<VirtualFile> buildRoot = PantsUtil.findBuildRoot(ProjectUtil.guessProjectDir(myProject));
 
         return buildRoot.isPresent() && VfsUtil.isAncestor(buildRoot.get(), vFile, false);
       }
