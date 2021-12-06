@@ -11,7 +11,7 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.impl.NotificationsConfigurationImpl;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.twitter.intellij.pants.PantsBundle;
@@ -36,7 +36,7 @@ public class FastpassRecommendationNotificationService {
   }
 
   public static FastpassRecommendationNotificationService getInstance() {
-    return ServiceManager.getService(FastpassRecommendationNotificationService.class);
+    return ApplicationManager.getApplication().getService(FastpassRecommendationNotificationService.class);
   }
 
   private void showRecommendationNotification(Project project) {

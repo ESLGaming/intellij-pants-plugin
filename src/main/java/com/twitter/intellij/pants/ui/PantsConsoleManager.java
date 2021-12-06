@@ -5,7 +5,6 @@ package com.twitter.intellij.pants.ui;
 
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.ToolWindow;
@@ -31,7 +30,7 @@ public class PantsConsoleManager {
   }
 
   public static ConsoleView getConsole(Project project) {
-    PantsConsoleManager service = ServiceManager.getService(project, PantsConsoleManager.class);
+    PantsConsoleManager service = project.getService(PantsConsoleManager.class);
     return service.getConsole();
   }
 

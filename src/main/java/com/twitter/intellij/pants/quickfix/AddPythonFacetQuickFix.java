@@ -148,8 +148,10 @@ public class AddPythonFacetQuickFix extends PantsQuickFix {
   }
 
   private void showNotification(String title, String message, NotificationType type) {
-    Notification notification = new Notification(
-      PantsConstants.PANTS, PantsIcons.Icon, title, null, message, type, null);
+    Notification notification = new Notification(PantsConstants.PANTS, message, type);
+    notification.setTitle(title);
+    notification.setIcon(PantsIcons.Icon);
+
     try {
       Notifications.Bus.notify(notification);
     } catch (Exception e) {

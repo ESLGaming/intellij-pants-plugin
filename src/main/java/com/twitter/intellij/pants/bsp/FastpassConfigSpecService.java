@@ -3,8 +3,6 @@
 
 package com.twitter.intellij.pants.bsp;
 
-
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
@@ -28,7 +26,7 @@ public class FastpassConfigSpecService {
   }
 
   public static FastpassConfigSpecService getInstance(Project project) {
-    return ServiceManager.getService(project, FastpassConfigSpecService.class);
+    return project.getService(FastpassConfigSpecService.class);
   }
 
   synchronized public CompletableFuture<Set<String>> getTargetSpecs() {

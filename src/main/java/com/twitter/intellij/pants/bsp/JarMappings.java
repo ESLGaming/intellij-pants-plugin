@@ -5,7 +5,6 @@ package com.twitter.intellij.pants.bsp;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -32,7 +31,7 @@ public class JarMappings {
   private static final Logger LOG = Logger.getInstance(JarMappings.class);
 
   public static JarMappings getInstance(Project project) {
-    return ServiceManager.getService(project, JarMappings.class);
+    return project.getService(JarMappings.class);
   }
 
   public JarMappings(Project project) {

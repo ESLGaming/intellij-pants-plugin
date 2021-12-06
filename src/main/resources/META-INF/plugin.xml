@@ -159,7 +159,7 @@
 
         <moduleService serviceImplementation="com.twitter.intellij.pants.service.project.metadata.ModuleTargetMetadataStorage"/>
 
-        <notificationGroup id="pants" displayType="STICKY_BALLOON" />
+        <notificationGroup id="pants" displayType="BALLOON" />
     </extensions>
 
     <applicationListeners>

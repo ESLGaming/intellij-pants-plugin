@@ -6,7 +6,6 @@ package com.twitter.intellij.pants.bsp;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataKey;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
@@ -48,7 +47,7 @@ public class AmendAction extends AnAction {
       @Override
       public void run(@NotNull ProgressIndicator indicator) {
         try {
-          AmendService amendService = ServiceManager.getService(project, AmendService.class);
+          AmendService amendService = project.getService(AmendService.class);
           Optional<CompletableFuture<Void>> amendProcess =
             amendService.amendAll(basePath, new ArrayList<>(newTargets), project);
           if(!amendProcess.isPresent()){

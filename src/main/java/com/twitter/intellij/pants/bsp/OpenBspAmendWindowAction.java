@@ -9,11 +9,9 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.twitter.intellij.pants.PantsBundle;
 import com.twitter.intellij.pants.bsp.ui.FastpassManagerDialog;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +35,7 @@ public class OpenBspAmendWindowAction extends AnAction {
     Project project = e.getProject();
     if(project != null) {
       boolean isBsp = BspUtil.isBspProject(project);
-      boolean amendInProgress = ServiceManager.getService(project, AmendService.class).isAmendProcessOngoing();
+      boolean amendInProgress = project.getService(AmendService.class).isAmendProcessOngoing();
       e.getPresentation().setVisible(isBsp);
       e.getPresentation().setEnabled(!amendInProgress);
     } else {

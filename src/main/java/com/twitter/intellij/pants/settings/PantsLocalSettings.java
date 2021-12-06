@@ -4,7 +4,6 @@
 package com.twitter.intellij.pants.settings;
 
 import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
@@ -24,7 +23,7 @@ public class PantsLocalSettings extends AbstractExternalSystemLocalSettings<Abst
 
   @NotNull
   public static PantsLocalSettings getInstance(@NotNull Project project) {
-    return ServiceManager.getService(project, PantsLocalSettings.class);
+    return project.getService(PantsLocalSettings.class);
   }
 
   @Nullable

@@ -5,7 +5,6 @@ package com.twitter.intellij.pants.settings;
 
 import com.google.common.collect.Sets;
 import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.externalSystem.settings.AbstractExternalSystemSettings;
 import com.intellij.openapi.externalSystem.settings.ExternalSystemSettingsListener;
@@ -90,7 +89,7 @@ public class PantsSettings extends AbstractExternalSystemSettings<PantsSettings,
 
   @NotNull
   public static PantsSettings getInstance(@NotNull Project project) {
-    return ServiceManager.getService(project, PantsSettings.class);
+    return project.getService(PantsSettings.class);
   }
 
   @Override

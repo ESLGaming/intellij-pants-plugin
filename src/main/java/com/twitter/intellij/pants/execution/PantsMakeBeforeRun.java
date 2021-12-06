@@ -350,7 +350,10 @@ public class PantsMakeBeforeRun extends ExternalSystemBeforeRunTaskProvider {
   private void notify(final String title, final String subtitle, NotificationType type) {
     /* Show pop up notification about pants compile result. */
     ApplicationManager.getApplication().invokeLater(() -> {
-      Notification start = new Notification(PantsConstants.PANTS, PantsIcons.Icon, title, subtitle, null, type, null);
+      Notification start = new Notification(PantsConstants.PANTS, "", type);
+      start.setIcon(PantsIcons.Icon);
+      start.setTitle(title);
+      start.setSubtitle(subtitle);
       Notifications.Bus.notify(start);
     });
   }

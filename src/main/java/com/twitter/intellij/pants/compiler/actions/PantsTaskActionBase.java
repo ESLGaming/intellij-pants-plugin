@@ -53,13 +53,12 @@ public abstract class PantsTaskActionBase extends AnAction implements DumbAware 
       // TODO: signal on null project?
       Notification notification = new Notification(
         PantsConstants.PANTS,
-        PantsIcons.Icon,
-        "Pants task failed",
-        "Project not found",
-        null,
-        NotificationType.ERROR,
-        null
+        "",
+        NotificationType.ERROR
       );
+      notification.setTitle("Pants task failed");
+      notification.setSubtitle("Project not found");
+      notification.setIcon(PantsIcons.Icon);
       Notifications.Bus.notify(notification);
       return;
     }

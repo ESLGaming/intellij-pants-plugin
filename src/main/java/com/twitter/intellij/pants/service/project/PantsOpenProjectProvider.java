@@ -6,7 +6,6 @@ package com.twitter.intellij.pants.service.project;
 import com.intellij.CommonBundle;
 import com.intellij.ide.IdeBundle;
 import com.intellij.ide.JavaUiBundle;
-import com.intellij.ide.impl.NewProjectUtil;
 import com.intellij.ide.impl.OpenProjectTask;
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard;
 import com.intellij.ide.util.projectWizard.ProjectBuilder;
@@ -20,6 +19,7 @@ import com.intellij.openapi.externalSystem.util.ExternalSystemUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.project.ex.ProjectManagerEx;
+import com.intellij.openapi.projectRoots.ex.JavaSdkUtil;
 import com.intellij.openapi.roots.CompilerProjectExtension;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.ui.Messages;
@@ -28,7 +28,6 @@ import com.intellij.openapi.wm.impl.FrameInfo;
 import com.intellij.platform.PlatformProjectOpenProcessor;
 import com.intellij.projectImport.ProjectImportBuilder;
 import com.intellij.projectImport.ProjectOpenProcessor;
-import com.intellij.projectImport.ProjectOpenedCallback;
 import com.twitter.intellij.pants.service.project.wizard.PantsProjectImportProvider;
 import com.twitter.intellij.pants.util.PantsConstants;
 import com.twitter.intellij.pants.util.PantsUtil;
@@ -38,7 +37,6 @@ import org.jetbrains.annotations.Nullable;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Optional;
 
 import static com.intellij.ide.impl.ProjectUtil.focusProjectWindow;
@@ -164,7 +162,7 @@ final class PantsOpenProjectProvider implements OpenProjectProvider {
     try {
       ApplicationManager.getApplication().runWriteAction(() -> {
         Optional.ofNullable(dialog.getNewProjectJdk())
-          .ifPresent(jdk -> NewProjectUtil.applyJdkToProject(project, jdk));
+          .ifPresent(jdk -> JavaSdkUtil.applyJdkToProject(project, jdk));
 
         URI output = projectDir(projectFile).resolve(".out").toUri();
         Optional.ofNullable(CompilerProjectExtension.getInstance(project))
