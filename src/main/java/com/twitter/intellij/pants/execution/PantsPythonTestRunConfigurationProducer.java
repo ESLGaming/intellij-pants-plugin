@@ -18,7 +18,6 @@ import com.jetbrains.python.psi.PyClass;
 import com.jetbrains.python.psi.PyFile;
 import com.jetbrains.python.psi.PyFunction;
 import com.jetbrains.python.testing.PythonUnitTestDetectorsBasedOnSettings;
-import com.jetbrains.python.testing.PythonUnitTestUtil;
 import com.twitter.intellij.pants.model.IJRC;
 import com.twitter.intellij.pants.util.PantsConstants;
 import org.jetbrains.annotations.NotNull;

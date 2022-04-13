@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun properties(key: String) = project.findProperty(key).toString()
-
 plugins {
     // Java support
     id("java")
@@ -10,7 +9,7 @@ plugins {
     // Kotlin support
     id("org.jetbrains.kotlin.jvm") version "1.5.21"
     // gradle-intellij-plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
-    id("org.jetbrains.intellij") version "1.3.0"
+    id("org.jetbrains.intellij") version "1.5.2"
 }
 
 group = properties("pluginGroup")
@@ -22,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.scala-lang:scala-library:2.13.7")
+    compileOnly("org.scala-lang:scala-library:2.13.8")
 }
 
 // Configure gradle-intellij-plugin plugin.
