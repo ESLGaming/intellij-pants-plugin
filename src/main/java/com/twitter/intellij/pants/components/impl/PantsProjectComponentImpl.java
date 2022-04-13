@@ -164,7 +164,7 @@ public class PantsProjectComponentImpl implements ProjectManagerListener {
             if (toolWindow != null) {
               toolWindow.show(null);
             }
-            ExternalSystemUtil.ensureToolWindowInitialized(project, PantsConstants.SYSTEM_ID);
+            ExternalSystemUtil.ensureToolWindowContentInitialized(project, PantsConstants.SYSTEM_ID);
           }
         }
 
