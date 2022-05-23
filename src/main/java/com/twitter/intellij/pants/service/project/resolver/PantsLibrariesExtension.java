@@ -5,26 +5,19 @@ package com.twitter.intellij.pants.service.project.resolver;
 
 import com.intellij.openapi.externalSystem.model.DataNode;
 import com.intellij.openapi.externalSystem.model.ProjectKeys;
-import com.intellij.openapi.externalSystem.model.project.LibraryData;
-import com.intellij.openapi.externalSystem.model.project.LibraryDependencyData;
-import com.intellij.openapi.externalSystem.model.project.LibraryLevel;
-import com.intellij.openapi.externalSystem.model.project.LibraryPathType;
-import com.intellij.openapi.externalSystem.model.project.ModuleData;
-import com.intellij.openapi.externalSystem.model.project.ProjectData;
+import com.intellij.openapi.externalSystem.model.project.*;
 import com.intellij.openapi.util.io.FileUtil;
 import com.twitter.intellij.pants.service.PantsCompileOptionsExecutor;
 import com.twitter.intellij.pants.service.project.PantsResolverExtension;
 import com.twitter.intellij.pants.service.project.model.LibraryInfo;
 import com.twitter.intellij.pants.service.project.model.ProjectInfo;
 import com.twitter.intellij.pants.service.project.model.TargetInfo;
-import com.twitter.intellij.pants.service.project.model.graph.BuildGraph;
 import com.twitter.intellij.pants.util.PantsConstants;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.Map;
-import java.util.Optional;
 
 public class PantsLibrariesExtension implements PantsResolverExtension {
   @Override
@@ -32,8 +25,7 @@ public class PantsLibrariesExtension implements PantsResolverExtension {
     @NotNull ProjectInfo projectInfo,
     @NotNull PantsCompileOptionsExecutor executor,
     @NotNull DataNode<ProjectData> projectDataNode,
-    @NotNull Map<String, DataNode<ModuleData>> modules,
-    @NotNull Optional<BuildGraph> buildGraph
+    @NotNull Map<String, DataNode<ModuleData>> modules
   ) {
     for (Map.Entry<String, TargetInfo> entry : projectInfo.getSortedTargets()) {
       final TargetInfo targetInfo = entry.getValue();

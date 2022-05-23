@@ -44,7 +44,6 @@ public class PantsCompileOptionsExecutor {
   private final PantsCompileOptions myOptions;
   private final File myBuildRoot;
   private final boolean myResolveSourcesAndDocsForJars;
-  private final Optional<Integer> myIncrementalImportDepth;
 
   @NotNull
   public static PantsCompileOptionsExecutor create(
@@ -60,45 +59,21 @@ public class PantsCompileOptionsExecutor {
     if (!buildRoot.isPresent() || !buildRoot.get().exists()) {
       throw new ExternalSystemException(PantsBundle.message("pants.error.no.pants.executable.by.path", options.getExternalProjectPath()));
     }
-    return new PantsCompileOptionsExecutor(
-      buildRoot.get(),
-      options,
-      executionOptions.isLibsWithSourcesAndDocs(),
-      executionOptions.incrementalImportDepth()
-    );
-  }
-
-  @NotNull
-  @TestOnly
-  public static PantsCompileOptionsExecutor createMock() {
-    return new PantsCompileOptionsExecutor(
-      new File("/"),
-      new MyPantsCompileOptions("", PantsExecutionSettings.createDefault()),
-      true,
-      Optional.of(1)
-    ) {
-    };
+    return new PantsCompileOptionsExecutor(buildRoot.get(), options, executionOptions.isLibsWithSourcesAndDocs());
   }
 
   private PantsCompileOptionsExecutor(
     @NotNull File buildRoot,
     @NotNull PantsCompileOptions compilerOptions,
-    boolean resolveSourcesAndDocsForJars,
-    @NotNull Optional<Integer> incrementalImportDepth
+    boolean resolveSourcesAndDocsForJars
   ) {
     myBuildRoot = buildRoot;
     myOptions = compilerOptions;
     myResolveSourcesAndDocsForJars = resolveSourcesAndDocsForJars;
-    myIncrementalImportDepth = incrementalImportDepth;
   }
 
   public String getProjectRelativePath() {
     return PantsUtil.getRelativeProjectPath(getBuildRoot(), getProjectPath()).get();
-  }
-
-  @NotNull
-  public Optional<Integer> getIncrementalImportDepth() {
-    return myIncrementalImportDepth;
   }
 
   @NotNull
@@ -293,10 +268,6 @@ public class PantsCompileOptionsExecutor {
     @NotNull
     public List<String> getSelectedTargetSpecs() {
       return myExecutionOptions.getSelectedTargetSpecs();
-    }
-
-    public Optional<Integer> incrementalImportDepth() {
-      return myExecutionOptions.incrementalImportDepth();
     }
 
     @Override

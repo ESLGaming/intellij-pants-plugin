@@ -9,7 +9,6 @@ import com.intellij.openapi.externalSystem.model.project.ModuleData;
 import com.intellij.openapi.externalSystem.model.project.ModuleDependencyData;
 import com.intellij.openapi.externalSystem.model.project.ProjectData;
 import com.twitter.intellij.pants.service.PantsCompileOptionsExecutor;
-import com.twitter.intellij.pants.service.project.model.graph.BuildGraph;
 import com.twitter.intellij.pants.service.project.PantsResolverExtension;
 import com.twitter.intellij.pants.service.project.model.ProjectInfo;
 import com.twitter.intellij.pants.service.project.model.TargetInfo;
@@ -18,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class PantsModuleDependenciesExtension implements PantsResolverExtension {
   @Override
@@ -26,8 +24,7 @@ public class PantsModuleDependenciesExtension implements PantsResolverExtension 
     @NotNull ProjectInfo projectInfo,
     @NotNull PantsCompileOptionsExecutor executor,
     @NotNull DataNode<ProjectData> projectDataNode,
-    @NotNull Map<String, DataNode<ModuleData>> modules,
-    @NotNull Optional<BuildGraph> buildGraph
+    @NotNull Map<String, DataNode<ModuleData>> modules
   ) {
     for (Map.Entry<String, TargetInfo> entry : projectInfo.getSortedTargets()) {
       final String mainTarget = entry.getKey();

@@ -113,10 +113,6 @@ public class PantsProjectComponentImpl implements ProjectManagerListener {
           if (serializedTargets == null || projectPath == null) {
             return;
           }
-          // TODO: This is actually an integer value: if we replaced the incremental import
-          // checkbox with an integer optional, we could propagate this value through.
-          final Optional<Integer> enableIncrementalImport =
-            Optional.ofNullable(PropertiesComponent.getInstance(project).getValue("incremental_import")).map(Integer::parseInt);
 
           final boolean enableExportDepAsJar =
             Boolean.parseBoolean(Optional.ofNullable(PropertiesComponent.getInstance(project).getValue("dep_as_jar")).orElse("false"));
@@ -127,8 +123,7 @@ public class PantsProjectComponentImpl implements ProjectManagerListener {
           final List<String> targetSpecs = PantsUtil.gson.fromJson(serializedTargets, PantsUtil.TYPE_LIST_STRING);
           final boolean loadLibsAndSources = true;
           final PantsProjectSettings pantsProjectSettings =
-            new PantsProjectSettings(
-              targetSpecs, targetSpecs, projectPath, loadLibsAndSources, enableIncrementalImport.isPresent(), enableIncrementalImport.orElse(0), enableExportDepAsJar);
+            new PantsProjectSettings(targetSpecs, targetSpecs, projectPath, loadLibsAndSources, enableExportDepAsJar);
 
           /*
            * Following procedures in {@link com.intellij.openapi.externalSystem.util.ExternalSystemUtil#refreshProjects}:

@@ -17,20 +17,13 @@ import com.twitter.intellij.pants.service.project.PantsResolverExtension;
 import com.twitter.intellij.pants.service.project.model.ContentRoot;
 import com.twitter.intellij.pants.service.project.model.ProjectInfo;
 import com.twitter.intellij.pants.service.project.model.TargetInfo;
-import com.twitter.intellij.pants.service.project.model.graph.BuildGraph;
 import com.twitter.intellij.pants.util.PantsConstants;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PantsSourceRootsExtension implements PantsResolverExtension {
-
   private static String getSourceRootRegardingTargetType(@NotNull TargetInfo targetInfo, @NotNull ContentRoot root) {
     return doNotSupportPackagePrefixes(targetInfo) ? root.getPackageRoot() : root.getRawSourceRoot();
   }
@@ -54,8 +47,7 @@ public class PantsSourceRootsExtension implements PantsResolverExtension {
     @NotNull ProjectInfo projectInfo,
     @NotNull PantsCompileOptionsExecutor executor,
     @NotNull DataNode<ProjectData> projectDataNode,
-    @NotNull Map<String, DataNode<ModuleData>> modules,
-    @NotNull Optional<BuildGraph> buildGraph
+    @NotNull Map<String, DataNode<ModuleData>> modules
   ) {
     for (Map.Entry<String, TargetInfo> entry : projectInfo.getSortedTargets()) {
       final String targetAddress = entry.getKey();

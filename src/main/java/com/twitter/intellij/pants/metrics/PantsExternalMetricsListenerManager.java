@@ -37,18 +37,6 @@ public class PantsExternalMetricsListenerManager implements PantsExternalMetrics
   }
 
   @Override
-  public void logIsIncrementalImport(boolean isIncremental) {
-    Arrays.stream(EP_NAME.getExtensions()).forEach(s -> {
-      try {
-        s.logIsIncrementalImport(isIncremental);
-      }
-      catch (Throwable t) {
-        LOG.info(t);
-      }
-    });
-  }
-
-  @Override
   public void logIsPantsNoopCompile(boolean isNoop) {
     Arrays.stream(EP_NAME.getExtensions()).forEach(s -> {
       try {

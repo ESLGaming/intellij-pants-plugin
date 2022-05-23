@@ -17,18 +17,7 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
   private String projectName;
   private List<String> mySelectedTargetSpecs = new ArrayList<>();
   private List<String> myAllAvailableTargetSpecs = new ArrayList<>();
-  public boolean libsWithSources;
-  public boolean incrementalImportEnabled;
-
-  public boolean isIncrementalImportEnabled() {
-    return incrementalImportEnabled;
-  }
-
-  public int getIncrementalImportDepth() {
-    return incrementalImportDepth;
-  }
-
-  public int incrementalImportDepth;
+  public boolean libsWithSources = true;
   public boolean importSourceDepsAsJars;
 
 
@@ -37,7 +26,6 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
    * @param selectedTargetSpecs       targets selected by the user to import
    * @param externalProjectPath       path to the Pants project.
    * @param libsWithSources           whether to import sources and docs when resolving for jars.
-   * @param isEnableIncrementalImport whether to enabled incremental import.
    * @param isImportSourceDepsAsJars  whether to import source dependencies as frozen jars.
    */
   public PantsProjectSettings(
@@ -45,16 +33,12 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
     List<String> selectedTargetSpecs,
     String externalProjectPath,
     boolean libsWithSources,
-    boolean isEnableIncrementalImport,
-    int incrementalImportDepth,
     boolean isImportSourceDepsAsJars
   ) {
     setExternalProjectPath(externalProjectPath);
     mySelectedTargetSpecs = selectedTargetSpecs;
     myAllAvailableTargetSpecs = allAvailableTargetSpecs;
     this.libsWithSources = libsWithSources;
-    incrementalImportEnabled = isEnableIncrementalImport;
-    this.incrementalImportDepth = incrementalImportDepth;
     importSourceDepsAsJars = isImportSourceDepsAsJars;
   }
 
@@ -75,8 +59,6 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
            && Objects.equals(libsWithSources, other.libsWithSources)
            && Objects.equals(myAllAvailableTargetSpecs, other.myAllAvailableTargetSpecs)
            && Objects.equals(mySelectedTargetSpecs, other.mySelectedTargetSpecs)
-           && Objects.equals(incrementalImportEnabled, other.incrementalImportEnabled)
-           && Objects.equals(incrementalImportDepth, other.incrementalImportDepth)
            && Objects.equals(importSourceDepsAsJars, other.importSourceDepsAsJars);
   }
 
@@ -96,8 +78,6 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
       ((PantsProjectSettings) receiver).setSelectedTargetSpecs(getSelectedTargetSpecs());
       ((PantsProjectSettings) receiver).setAllAvailableTargetSpecs(getAllAvailableTargetSpecs());
       ((PantsProjectSettings) receiver).libsWithSources = libsWithSources;
-      ((PantsProjectSettings) receiver).incrementalImportDepth = incrementalImportDepth;
-      ((PantsProjectSettings) receiver).incrementalImportEnabled = incrementalImportEnabled;
       ((PantsProjectSettings) receiver).importSourceDepsAsJars = importSourceDepsAsJars;
     }
   }
@@ -122,11 +102,6 @@ public class PantsProjectSettings extends ExternalProjectSettings implements Pan
 
   public void setSelectedTargetSpecs(List<String> selectedTargetSpecs) {
     mySelectedTargetSpecs = selectedTargetSpecs;
-  }
-
-  @Override
-  public Optional<Integer> incrementalImportDepth() {
-    return incrementalImportEnabled ? Optional.of(incrementalImportDepth) : Optional.empty();
   }
 
   @Override

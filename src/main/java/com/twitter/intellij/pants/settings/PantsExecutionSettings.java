@@ -16,15 +16,12 @@ import java.util.Optional;
 public class PantsExecutionSettings extends ExternalSystemExecutionSettings implements PantsExecutionOptions {
   private final String myName;
   private final boolean myLibsWithSourcesAndDocs;
-  private final Optional<Integer> myIncrementalImportDepth;
-
   private final boolean myImportSourceDepsAsJars;
   private final List<String> myTargetSpecs;
 
   private static final String DEFAULT_PROJECT_NAME = null;
   private static final List<String> DEFAULT_TARGET_SPECS = Collections.emptyList();
   private static final boolean DEFAULT_WITH_SOURCES_AND_DOCS = true;
-  private static final Optional<Integer> DEFAULT_INCREMENTAL_IMPORT = Optional.empty();
   private static final boolean DEFAULT_IMPORT_SOURCE_DEPS_AS_JARS = false;
 
   public static PantsExecutionSettings createDefault() {
@@ -32,8 +29,7 @@ public class PantsExecutionSettings extends ExternalSystemExecutionSettings impl
       DEFAULT_PROJECT_NAME,
       DEFAULT_TARGET_SPECS,
       DEFAULT_WITH_SOURCES_AND_DOCS,
-      DEFAULT_IMPORT_SOURCE_DEPS_AS_JARS,
-      DEFAULT_INCREMENTAL_IMPORT
+      DEFAULT_IMPORT_SOURCE_DEPS_AS_JARS
     );
   }
 
@@ -41,28 +37,24 @@ public class PantsExecutionSettings extends ExternalSystemExecutionSettings impl
     String name,
     List<String> targetSpecs,
     boolean libsWithSourcesAndDocs,
-    boolean importSourceDepsAsJars,
-    Optional<Integer> enableIncrementalImport
+    boolean importSourceDepsAsJars
   ){
     myName = name;
     myTargetSpecs = targetSpecs;
     myLibsWithSourcesAndDocs = libsWithSourcesAndDocs;
     myImportSourceDepsAsJars = importSourceDepsAsJars;
-    myIncrementalImportDepth = enableIncrementalImport;
   }
 
   /**
    * @param targetSpecs             targets explicitly listed from `pants idea-plugin` goal.
    * @param libsWithSourcesAndDocs  whether to import sources and docs when resolving for jars.
-   * @param enableIncrementalImport whether to incrementally import the project.
    */
   public PantsExecutionSettings(
     List<String> targetSpecs,
     boolean libsWithSourcesAndDocs,
-    boolean importSourceDepsAsJars,
-    Optional<Integer> enableIncrementalImport
+    boolean importSourceDepsAsJars
   ) {
-    this(DEFAULT_PROJECT_NAME, targetSpecs, libsWithSourcesAndDocs, importSourceDepsAsJars, enableIncrementalImport);
+    this(DEFAULT_PROJECT_NAME, targetSpecs, libsWithSourcesAndDocs, importSourceDepsAsJars);
   }
 
   public Optional<String> getProjectName(){
@@ -79,10 +71,6 @@ public class PantsExecutionSettings extends ExternalSystemExecutionSettings impl
     return myLibsWithSourcesAndDocs;
   }
 
-  public Optional<Integer> incrementalImportDepth() {
-    return myIncrementalImportDepth;
-  }
-
   @Override
   public boolean isImportSourceDepsAsJars() {
     return myImportSourceDepsAsJars;
@@ -95,17 +83,12 @@ public class PantsExecutionSettings extends ExternalSystemExecutionSettings impl
     if (!super.equals(o)) return false;
 
     PantsExecutionSettings settings = (PantsExecutionSettings) o;
-    return Objects.equals(myIncrementalImportDepth, settings.myIncrementalImportDepth) &&
-           Objects.equals(myLibsWithSourcesAndDocs, settings.myLibsWithSourcesAndDocs) &&
+    return Objects.equals(myLibsWithSourcesAndDocs, settings.myLibsWithSourcesAndDocs) &&
            Objects.equals(myTargetSpecs, settings.myTargetSpecs);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(
-      myTargetSpecs,
-      myLibsWithSourcesAndDocs,
-      myIncrementalImportDepth
-    );
+    return Objects.hash(myTargetSpecs, myLibsWithSourcesAndDocs);
   }
 }

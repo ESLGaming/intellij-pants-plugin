@@ -13,13 +13,8 @@ import com.intellij.openapi.externalSystem.model.ExternalSystemException;
 import com.intellij.openapi.externalSystem.model.ProjectKeys;
 import com.intellij.openapi.externalSystem.model.project.ModuleData;
 import com.intellij.openapi.externalSystem.model.project.ProjectData;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.Consumer;
-import com.twitter.intellij.pants.PantsBundle;
-import com.twitter.intellij.pants.PantsException;
-import com.twitter.intellij.pants.model.SimpleExportResult;
 import com.twitter.intellij.pants.service.PantsCompileOptionsExecutor;
-import com.twitter.intellij.pants.service.project.model.graph.BuildGraph;
 import com.twitter.intellij.pants.service.project.model.ProjectInfo;
 import com.twitter.intellij.pants.util.PantsConstants;
 import com.twitter.intellij.pants.util.PantsUtil;
@@ -30,7 +25,6 @@ import org.jetbrains.annotations.TestOnly;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class PantsResolver {
   /**
@@ -103,32 +97,14 @@ public class PantsResolver {
     }
     LOG.debug("Amount of targets after modifiers: " + myProjectInfo.getTargets().size());
 
-    Optional<BuildGraph> buildGraph = constructBuildGraph(projectInfoDataNode);
-
     PropertiesComponent.getInstance().setValues(PantsConstants.PANTS_AVAILABLE_TARGETS_KEY, myProjectInfo.getAvailableTargetTypes());
     final Map<String, DataNode<ModuleData>> modules = new HashMap<>();
     for (PantsResolverExtension resolver : PantsResolverExtension.EP_NAME.getExtensions()) {
-      resolver.resolve(myProjectInfo, myExecutor, projectInfoDataNode, modules, buildGraph);
+      resolver.resolve(myProjectInfo, myExecutor, projectInfoDataNode, modules);
     }
     if (LOG.isDebugEnabled()) {
       final int amountOfModules = PantsUtil.findChildren(projectInfoDataNode, ProjectKeys.MODULE).size();
       LOG.debug("Amount of modules created: " + amountOfModules);
     }
-  }
-
-  private Optional<BuildGraph> constructBuildGraph(@NotNull DataNode<ProjectData> projectInfoDataNode) {
-    Optional<BuildGraph> buildGraph;
-    if (myExecutor.getOptions().incrementalImportDepth().isPresent()) {
-      Optional<VirtualFile> pantsExecutable = PantsUtil.findPantsExecutable(projectInfoDataNode.getData().getLinkedExternalProjectPath());
-      SimpleExportResult result = SimpleExportResult.getExportResult(pantsExecutable.get().getPath());
-      if (PantsUtil.versionCompare(result.getVersion(), "1.0.9") < 0) {
-        throw new PantsException(PantsBundle.message("pants.resolve.incremental.import.unsupported"));
-      }
-      buildGraph = Optional.of(new BuildGraph(myProjectInfo.getTargets()));
-    }
-    else {
-      buildGraph = Optional.empty();
-    }
-    return buildGraph;
   }
 }

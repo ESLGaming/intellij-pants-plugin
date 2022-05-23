@@ -210,11 +210,8 @@ public class FileChangeTracker {
     }
     Optional<CompileSnapshot> previousSnapshot = lastRecordedState.getLastCompileSnapshot();
     if (
-      // Recompile if project is in incremental mode, because there is no way to keep track of the all changes
-      // in the transitive graph.
-      settings.isEnableIncrementalImport()
       // Recompile if project is dirty or there is no previous record.
-      || (lastRecordedState.isDirty())
+      (lastRecordedState.isDirty())
       // Recompile if there is no previous record.
       || !previousSnapshot.isPresent()
       // Recompile if current snapshot is different from previous one.

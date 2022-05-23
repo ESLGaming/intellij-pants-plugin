@@ -24,12 +24,6 @@ public interface PantsExternalMetricsListener {
   void logIsGUIImport(boolean isGUI) throws Throwable;
 
   /**
-   * @param isIncremental true if it is incremental import, i.e. subgraph of a project,
-   *                      otherwise it is the full graph import.
-   */
-  void logIsIncrementalImport(boolean isIncremental) throws Throwable;
-
-  /**
    * Log whether a particular build invocation is a noop or not.
    */
   void logIsPantsNoopCompile(boolean isNoop) throws Throwable;

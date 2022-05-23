@@ -9,7 +9,6 @@ import com.intellij.openapi.externalSystem.model.project.*;
 import com.intellij.openapi.module.ModuleTypeId;
 import com.intellij.openapi.util.io.FileUtil;
 import com.twitter.intellij.pants.service.PantsCompileOptionsExecutor;
-import com.twitter.intellij.pants.service.project.model.graph.BuildGraph;
 import com.twitter.intellij.pants.service.project.PantsResolverExtension;
 import com.twitter.intellij.pants.service.project.model.ProjectInfo;
 import com.twitter.intellij.pants.service.project.model.PythonSetup;
@@ -19,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  *  Currently we configure requirements only for default interpreter.
@@ -32,8 +30,7 @@ public class PythonRequirementsResolver implements PantsResolverExtension {
     @NotNull ProjectInfo projectInfo,
     @NotNull PantsCompileOptionsExecutor executor,
     @NotNull DataNode<ProjectData> projectDataNode,
-    @NotNull Map<String, DataNode<ModuleData>> modules,
-    @NotNull Optional<BuildGraph> buildGraph
+    @NotNull Map<String, DataNode<ModuleData>> modules
   ) {
     final PythonSetup pythonSetup = projectInfo.getPythonSetup();
     if (pythonSetup == null) {

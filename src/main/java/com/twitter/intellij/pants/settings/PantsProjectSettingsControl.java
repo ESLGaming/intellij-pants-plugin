@@ -58,31 +58,11 @@ public class PantsProjectSettingsControl extends AbstractExternalProjectSettings
 
   private final JTextField myNameField = new JTextField();
 
-  private JSpinner newImportDepthSpinner(){
-    JSpinner spinner = new JSpinner();
-    spinner.setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
-    spinner.setEnabled(false);
-    return spinner;
-  }
-
-  private JBCheckBox newEnableIcrementalImportCheckbox(){
-    JBCheckBox checkbox = new JBCheckBox(PantsBundle.message("pants.settings.text.with.incremental.import"));
-    checkbox.addActionListener(evt -> {
-      int defaultIncrementalImportDepth = 10;
-      myImportDepthSpinner.setValue(((JBCheckBox) evt.getSource()).isSelected() ? defaultIncrementalImportDepth : 0);
-      myImportDepthSpinner.setEnabled(((JBCheckBox) evt.getSource()).isSelected());
-    });
-    return checkbox;
-  }
-
   @VisibleForTesting
   protected CheckBoxList<String> myTargetSpecsBox = new CheckBoxList<>();
 
-  private JBCheckBox myLibsWithSourcesCheckBox = new JBCheckBox(PantsBundle.message("pants.settings.text.with.sources.and.docs"));
-  private JSpinner myImportDepthSpinner = newImportDepthSpinner();
-  private JBCheckBox myEnableIncrementalImportCheckBox = newEnableIcrementalImportCheckbox();
-  private JBCheckBox myImportSourceDepsAsJarsCheckBox = new JBCheckBox(PantsBundle.message("pants.settings.text.import.deps.as.jars"));
-  private JPanel myImportDepthPanel = importDepthPanel(myImportDepthSpinner);
+  private final JBCheckBox myLibsWithSourcesCheckBox = new JBCheckBox(PantsBundle.message("pants.settings.text.with.sources.and.docs"), true);
+  private final JBCheckBox myImportSourceDepsAsJarsCheckBox = new JBCheckBox(PantsBundle.message("pants.settings.text.import.deps.as.jars"));
 
   @VisibleForTesting
   protected Set<String> errors = new HashSet<>();
@@ -95,22 +75,10 @@ public class PantsProjectSettingsControl extends AbstractExternalProjectSettings
     super(null, settings);
   }
 
-  private static JPanel importDepthPanel(JSpinner importDepthSpinner) {
-    JPanel importDepthPanel = new JPanel();
-    importDepthPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-    importDepthPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-    importDepthPanel.add(new JLabel("Import depth: "));
-    importDepthPanel.add(importDepthSpinner);
-    return importDepthPanel;
-
-  }
-
   @Override
   protected void fillExtraControls(@NotNull PaintAwarePanel content, int indentLevel) {
     PantsProjectSettings initialSettings = getInitialSettings();
     myLibsWithSourcesCheckBox.setSelected(initialSettings.libsWithSources);
-    myEnableIncrementalImportCheckBox.setSelected(initialSettings.incrementalImportEnabled);
-    myImportDepthSpinner.setValue(initialSettings.incrementalImportDepth);
     myImportSourceDepsAsJarsCheckBox.setSelected(initialSettings.importSourceDepsAsJars);
 
     myTargetSpecsBox.setItems(initialSettings.getAllAvailableTargetSpecs(), x -> x);
@@ -120,8 +88,6 @@ public class PantsProjectSettingsControl extends AbstractExternalProjectSettings
 
     List<JComponent> boxes = ContainerUtil.newArrayList(
       myLibsWithSourcesCheckBox,
-      myEnableIncrementalImportCheckBox,
-      myImportDepthPanel,
       myImportSourceDepsAsJarsCheckBox,
       new JBLabel(PantsBundle.message("pants.settings.text.targets")),
       new JBScrollPane(myTargetSpecsBox)
@@ -160,8 +126,6 @@ public class PantsProjectSettingsControl extends AbstractExternalProjectSettings
       // Project path is not visible to user, so it will stay the same.
       getInitialSettings().getExternalProjectPath(),
       myLibsWithSourcesCheckBox.isSelected(),
-      myEnableIncrementalImportCheckBox.isSelected(),
-      (Integer)(myImportDepthSpinner.getValue()),
       myImportSourceDepsAsJarsCheckBox.isSelected()
     );
 
@@ -300,8 +264,6 @@ public class PantsProjectSettingsControl extends AbstractExternalProjectSettings
     settings.setSelectedTargetSpecs(getSelectedTargetSpecsFromBoxes());
     settings.setAllAvailableTargetSpecs(getAllTargetSpecsFromBoxes());
     settings.libsWithSources = myLibsWithSourcesCheckBox.isSelected();
-    settings.incrementalImportEnabled = myEnableIncrementalImportCheckBox.isSelected();
-    settings.incrementalImportDepth = (Integer) (myImportDepthSpinner.getValue());
     settings.importSourceDepsAsJars = myImportSourceDepsAsJarsCheckBox.isSelected();
   }
 
