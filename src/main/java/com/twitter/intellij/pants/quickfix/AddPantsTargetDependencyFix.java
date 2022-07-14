@@ -106,7 +106,7 @@ public class AddPantsTargetDependencyFix extends PantsQuickFix {
       }
       final PyStringLiteralExpression literalToAdd = generator.createStringLiteralAlreadyEscaped("'" + targetAddressStringToAdd + "'");
       if (position != null) {
-        final PsiElement newLine = PsiParserFacade.SERVICE.getInstance(project).createWhiteSpaceFromText("\n");
+        final PsiElement newLine = PsiParserFacade.getInstance(project).createWhiteSpaceFromText("\n");
         final PsiElement addedLiteral = dependenciesArgument.addAfter(literalToAdd, position);
         dependenciesArgument.getNode().addChild(newLine.getNode(), addedLiteral.getNode());
       } else {
