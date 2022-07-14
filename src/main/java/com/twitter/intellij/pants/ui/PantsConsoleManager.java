@@ -49,7 +49,7 @@ public class PantsConsoleManager {
     PantsConsoleViewPanel pantsConsoleViewPanel = new PantsConsoleViewPanel(project, console);
     final boolean isLockable = true;
     final String displayName = "";
-    Content pantsConsoleContent = ContentFactory.SERVICE.getInstance().createContent(pantsConsoleViewPanel, displayName, isLockable);
+    Content pantsConsoleContent = ContentFactory.getInstance().createContent(pantsConsoleViewPanel, displayName, isLockable);
     pantsConsoleContent.setCloseable(false);
     window.getContentManager().addContent(pantsConsoleContent);
   }

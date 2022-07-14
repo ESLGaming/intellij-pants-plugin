@@ -211,7 +211,7 @@ final class PantsOpenProjectProvider implements OpenProjectProvider {
   private Project createProject(VirtualFile file, AddModuleWizard dialog) {
     Project project = PantsUtil.findBuildRoot(file)
       .map(root -> Paths.get(root.getPath()))
-      .map(root -> ProjectManagerEx.getInstanceEx().newProject(root, dialog.getProjectName(), new OpenProjectTask()))
+      .map(root -> ProjectManagerEx.getInstanceEx().newProject(root, new OpenProjectTask().withProjectName(dialog.getProjectName())))
       .orElse(null);
     if (project != null) {
       project.putUserData(ExternalSystemDataKeys.NEWLY_IMPORTED_PROJECT, true);
