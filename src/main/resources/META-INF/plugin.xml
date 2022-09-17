@@ -11,9 +11,8 @@
     <depends>com.intellij.modules.java</depends>
     <depends>com.intellij.gradle</depends>
 
-    <depends optional="true" config-file="pants-scala.xml">org.intellij.scala</depends>
-    <depends optional="true" config-file="pants-python.xml">PythonCore</depends>
-    <depends optional="true" config-file="pants-python.xml">Pythonid</depends>
+    <depends config-file="pants-python.xml">com.intellij.modules.python</depends>
+    <depends config-file="pants-scala.xml">org.intellij.scala</depends>
 
     <actions>
         <!--  This group adds "Import Project" action which to the Welcome screen which was removed in 2020.1  -->
