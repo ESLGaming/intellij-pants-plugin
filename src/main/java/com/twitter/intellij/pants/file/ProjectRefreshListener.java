@@ -3,9 +3,9 @@
 
 package com.twitter.intellij.pants.file;
 
-import com.intellij.notification.EventLog;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationListener;
+import com.intellij.notification.NotificationsManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.Project;
 import com.twitter.intellij.pants.PantsBundle;
@@ -15,7 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.event.HyperlinkEvent;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 import static com.twitter.intellij.pants.file.FileChangeTracker.HREF_REFRESH;
 
@@ -26,8 +27,10 @@ public final class ProjectRefreshListener extends NotificationListener.Adapter {
   private final Project project;
 
   private static boolean hasExistingRefreshNotification(Project project) {
-    ArrayList<Notification> notifications = EventLog.getLogModel(project).getNotifications();
-    return notifications.stream().anyMatch(s -> s.getTitle().equals(NOTIFICATION_TITLE));
+    Notification[] notifications =
+      NotificationsManager.getNotificationsManager().getNotificationsOfType(Notification.class, project);
+    return Arrays.stream(notifications)
+      .anyMatch(s -> s.getTitle().equals(NOTIFICATION_TITLE) && Objects.nonNull(s.getBalloon()));
   }
 
   /**
