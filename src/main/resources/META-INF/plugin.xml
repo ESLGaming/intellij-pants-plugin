@@ -13,6 +13,7 @@
 
     <depends config-file="pants-python.xml">com.intellij.modules.python</depends>
     <depends config-file="pants-scala.xml">org.intellij.scala</depends>
+    <depends optional="true" config-file="pants-indexing.xml">intellij.indexing.shared.core</depends>
 
     <actions>
         <!--  This group adds "Import Project" action which to the Welcome screen which was removed in 2020.1  -->
@@ -117,7 +118,6 @@
                              instance="com.twitter.intellij.pants.settings.PantsConfigurable"
                              key="pants.name" bundle="messages.PantsBundle"/>
         <dynamicActionConfigurationCustomizer implementation="com.twitter.intellij.pants.components.impl.PantsActionConfigurationCustomizer"/>
-        <projectOpenProcessor implementation="com.twitter.intellij.pants.service.project.PantsProjectOpenProcessor" order="last"/>
         <projectImportProvider
                 implementation="com.twitter.intellij.pants.service.project.wizard.PantsProjectImportProvider"/>
 

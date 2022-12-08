@@ -12,7 +12,6 @@
     <externalProjectDataService implementation="com.twitter.intellij.pants.service.scala.PantsScalaDataService" order="last"/>
     <highlightVisitor implementation="com.twitter.intellij.pants.highlight.PantsScalaHighlightVisitor"/>
     <bspResolverNamingExtension implementation="com.twitter.intellij.pants.service.scala.PantsBspResolverNamingExtension"/>
-    <projectOpenProcessor implementation="com.twitter.intellij.pants.service.project.FastpassProjectOpenProcessor" order="first"/>
     <projectImportProvider implementation="com.twitter.intellij.pants.service.project.wizard.FastpassProjectImportProvider"/>
     <runConfigurationProducer implementation="com.twitter.intellij.pants.execution.PantsMainRunConfigurationProducer"/>
   </extensions>

@@ -52,7 +52,7 @@ public class SourceJarGenerator extends AbstractAttachSourceProvider {
 
   @NotNull
   @Override
-  public Collection<AttachSourcesAction> getActions(List<LibraryOrderEntry> orderEntries, PsiFile classFile) {
+  public Collection<AttachSourcesAction> getActions(List<? extends LibraryOrderEntry> orderEntries, PsiFile classFile) {
     JarMappings mappings = JarMappings.getInstance(classFile.getProject());
 
     return resolveJar(classFile).flatMap(jar -> {
@@ -84,7 +84,7 @@ public class SourceJarGenerator extends AbstractAttachSourceProvider {
     }
 
     @Override
-    public ActionCallback perform(List<LibraryOrderEntry> orderEntriesContainingFile) {
+    public ActionCallback perform(List<? extends LibraryOrderEntry> orderEntriesContainingFile) {
       Collection<Library> libraries = orderEntriesContainingFile.stream()
         .map(LibraryOrderEntry::getLibrary)
         .filter(Objects::nonNull)

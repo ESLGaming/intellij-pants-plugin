@@ -9,7 +9,7 @@ plugins {
     // Kotlin support
     id("org.jetbrains.kotlin.jvm") version "1.7.10"
     // gradle-intellij-plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
-    id("org.jetbrains.intellij") version "1.9.0"
+    id("org.jetbrains.intellij") version "1.10.0"
 }
 
 group = properties("pluginGroup")
@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.scala-lang:scala-library:2.13.8")
+    compileOnly("org.scala-lang:scala-library:2.13.9")
 }
 
 // Configure gradle-intellij-plugin plugin.

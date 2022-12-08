@@ -4,6 +4,7 @@
 package com.twitter.intellij.pants.settings;
 
 import com.google.common.collect.Sets;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.externalSystem.settings.AbstractExternalSystemSettings;
@@ -80,7 +81,7 @@ public class PantsSettings extends AbstractExternalSystemSettings<PantsSettings,
   }
 
   @Override
-  public void subscribe(@NotNull ExternalSystemSettingsListener<PantsProjectSettings> listener) {
+  public void subscribe(@NotNull ExternalSystemSettingsListener<PantsProjectSettings> listener, @NotNull Disposable parentDisposable) {
 
   }
 

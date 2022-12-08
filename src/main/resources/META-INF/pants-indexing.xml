@@ -1,0 +1,8 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij">
+        <indexing.shared.java.maven.mavenPackageCoordinatesInferenceExtension
+                implementation="com.twitter.intellij.pants.indexing.IvyPackageCoordinatesInferenceExtension"/>
+        <indexing.shared.java.maven.mavenPackageCoordinatesInferenceExtension
+                implementation="com.twitter.intellij.pants.indexing.PantsMavenPackageCoordinatesInferenceExtension"/>
+    </extensions>
+</idea-plugin>

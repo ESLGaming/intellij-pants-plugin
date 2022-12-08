@@ -15,10 +15,7 @@ import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil;
 import com.intellij.openapi.externalSystem.util.ExternalSystemUtil;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
-import com.intellij.openapi.project.DumbService;
-import com.intellij.openapi.project.ModuleListener;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManagerListener;
+import com.intellij.openapi.project.*;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.ex.JavaSdkUtil;
 import com.intellij.openapi.startup.StartupManager;
@@ -68,7 +65,7 @@ public class PantsProjectComponentImpl implements ProjectManagerListener {
       return;
     }
 
-    StartupManager.getInstance(project).registerPostStartupActivity(
+    StartupManager.getInstance(project).runAfterOpened(
       new Runnable() {
         @Override
         public void run() {

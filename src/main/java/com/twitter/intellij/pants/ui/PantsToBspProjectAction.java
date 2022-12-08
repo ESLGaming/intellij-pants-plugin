@@ -65,7 +65,7 @@ public class PantsToBspProjectAction extends AnAction implements DumbAware {
     dependingOnBspProjectExistence(
       project,
       () -> createBspProject(project),
-      linkedBspProject -> ProjectUtil.openOrImport(Paths.get(linkedBspProject), new OpenProjectTask())
+      linkedBspProject -> ProjectUtil.openOrImport(Paths.get(linkedBspProject), OpenProjectTask.build())
     );
   }
 
@@ -101,7 +101,7 @@ public class PantsToBspProjectAction extends AnAction implements DumbAware {
   private void registerNewBspProjectAndOpen(Path projectPath, Project project) {
     PropertiesComponent.getInstance(project).setValue(BSP_LINKED_PROJECT_PATH, projectPath.toString());
     ApplicationManager.getApplication()
-      .invokeLater(() -> ProjectUtil.openOrImport(projectPath, new OpenProjectTask()));
+      .invokeLater(() -> ProjectUtil.openOrImport(projectPath, OpenProjectTask.build()));
   }
 
   private Optional<Path> existingProjectPath(String output, Path workspace) {
