@@ -118,6 +118,7 @@
                              instance="com.twitter.intellij.pants.settings.PantsConfigurable"
                              key="pants.name" bundle="messages.PantsBundle"/>
         <dynamicActionConfigurationCustomizer implementation="com.twitter.intellij.pants.components.impl.PantsActionConfigurationCustomizer"/>
+        <projectOpenProcessor implementation="com.twitter.intellij.pants.service.project.PantsProjectOpenProcessor" order="last"/>
         <projectImportProvider
                 implementation="com.twitter.intellij.pants.service.project.wizard.PantsProjectImportProvider"/>
 
