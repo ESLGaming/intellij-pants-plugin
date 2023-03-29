@@ -88,7 +88,7 @@ public class PantsTreeStructureProvider implements TreeStructureProvider {
 
   @Nullable
   @Override
-  public Object getData(@NotNull Collection<AbstractTreeNode<?>> collection, @NotNull String s) {
+  public Object getData(@NotNull Collection<? extends AbstractTreeNode<?>> collection, @NotNull String s) {
     return null;
   }
 }
