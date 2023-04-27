@@ -1,5 +1,7 @@
 default:
   image: amazoncorretto:17
+  tags:
+    - esl-aws
 
 stages:
   - publish
