@@ -5,13 +5,8 @@ package com.twitter.intellij.pants.projectview;
 
 import com.intellij.ide.SelectInTarget;
 import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.AbstractProjectViewPSIPane;
-import com.intellij.ide.projectView.impl.ProjectAbstractTreeStructureBase;
-import com.intellij.ide.projectView.impl.ProjectTreeStructure;
-import com.intellij.ide.projectView.impl.ProjectViewTree;
-import com.intellij.ide.util.treeView.AbstractTreeBuilder;
+import com.intellij.ide.projectView.impl.*;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.ide.util.treeView.AbstractTreeUpdater;
 import com.intellij.openapi.project.Project;
 import com.twitter.intellij.pants.PantsBundle;
 import com.twitter.intellij.pants.util.PantsUtil;
@@ -23,7 +18,7 @@ import javax.swing.Icon;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-public class TargetSpecsViewPane extends AbstractProjectViewPSIPane {
+public class TargetSpecsViewPane extends AbstractProjectViewPaneWithAsyncSupport {
   @NonNls public static final String ID = "TargetSpecsViewPane";
   private boolean myShowExcludedFiles = true;
   private boolean myShowOnlyLoadedFiles = false;
@@ -69,19 +64,8 @@ public class TargetSpecsViewPane extends AbstractProjectViewPSIPane {
   @NotNull
   @Override
   protected ProjectViewTree createTree(@NotNull DefaultTreeModel treeModel) {
-    return new ProjectViewTree(treeModel) {
-      @Override
-      public DefaultMutableTreeNode getSelectedNode() {
-        return TargetSpecsViewPane.this.getSelectedNode();
-      }
-    };
+    return new ProjectViewTree(treeModel);
   }
-
- @NotNull
- @Override
- protected AbstractTreeUpdater createTreeUpdater(@NotNull AbstractTreeBuilder treeBuilder) {
-   return new AbstractTreeUpdater(treeBuilder);
- }
 
   @NotNull
   @Override

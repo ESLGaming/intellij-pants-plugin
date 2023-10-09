@@ -7,13 +7,8 @@ import com.intellij.icons.AllIcons;
 import com.intellij.ide.SelectInTarget;
 import com.intellij.ide.projectView.ProjectView;
 import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.AbstractProjectViewPSIPane;
-import com.intellij.ide.projectView.impl.ProjectAbstractTreeStructureBase;
-import com.intellij.ide.projectView.impl.ProjectTreeStructure;
-import com.intellij.ide.projectView.impl.ProjectViewTree;
-import com.intellij.ide.util.treeView.AbstractTreeBuilder;
+import com.intellij.ide.projectView.impl.*;
 import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.ide.util.treeView.AbstractTreeUpdater;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.Presentation;
@@ -29,10 +24,9 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.Icon;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-public class ProjectFilesViewPane extends AbstractProjectViewPSIPane {
+public class ProjectFilesViewPane extends AbstractProjectViewPaneWithAsyncSupport {
   @NonNls public static final String ID = "ProjectFilesPane";
   public static final String SHOW_EXCLUDED_FILES_OPTION = "show-excluded-files";
   public static final String SHOW_ONLY_LOADED_FILES_OPTION = "show-only-loaded-files";
@@ -101,17 +95,7 @@ public class ProjectFilesViewPane extends AbstractProjectViewPSIPane {
   @NotNull
   @Override
   protected ProjectViewTree createTree(DefaultTreeModel treeModel) {
-    return new ProjectViewTree(treeModel) {
-      @Override
-      public DefaultMutableTreeNode getSelectedNode() {
-        return ProjectFilesViewPane.this.getSelectedNode();
-      }
-    };
-  }
-
-  @Override
-  protected AbstractTreeUpdater createTreeUpdater(AbstractTreeBuilder treeBuilder) {
-    return new AbstractTreeUpdater(treeBuilder);
+    return new ProjectViewTree(treeModel);
   }
 
   @NotNull
