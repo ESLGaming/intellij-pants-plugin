@@ -5,12 +5,12 @@ package com.twitter.intellij.pants.util;
 
 import com.intellij.facet.FacetManager;
 import com.intellij.openapi.module.Module;
-import com.jetbrains.python.facet.PythonFacet;
+import com.intellij.python.community.plugin.java.facet.JavaPythonFacet;
 import org.jetbrains.annotations.NotNull;
 
 public final class PantsPythonSdkUtil {
   public static boolean hasNoPythonSdk(@NotNull Module module) {
-    PythonFacet facet = FacetManager.getInstance(module).getFacetByType(PythonFacet.ID);
+    JavaPythonFacet facet = FacetManager.getInstance(module).getFacetByType(JavaPythonFacet.ID);
     return facet == null || facet.getConfiguration().getSdk() == null;
   }
 }

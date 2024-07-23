@@ -20,9 +20,9 @@ import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ex.ProjectRootManagerEx;
 import com.intellij.psi.PsiFile;
-import com.jetbrains.python.facet.PythonFacet;
-import com.jetbrains.python.facet.PythonFacetConfiguration;
-import com.jetbrains.python.facet.PythonFacetType;
+import com.intellij.python.community.plugin.java.facet.JavaPythonFacet;
+import com.intellij.python.community.plugin.java.facet.JavaPythonFacetConfiguration;
+import com.intellij.python.community.plugin.java.facet.JavaPythonFacetType;
 import com.jetbrains.python.sdk.PythonSdkType;
 import com.jetbrains.python.sdk.add.PyAddSdkDialog;
 import com.twitter.intellij.pants.util.PantsConstants;
@@ -111,8 +111,8 @@ public class AddPythonFacetQuickFix extends PantsQuickFix {
 
     for (Module module : modules) {
       FacetManager facetManager = FacetManager.getInstance(module);
-      Optional<PythonFacet> facetWithoutSdk = facetManager
-        .getFacetsByType(PythonFacet.ID)
+      Optional<JavaPythonFacet> facetWithoutSdk = facetManager
+        .getFacetsByType(JavaPythonFacet.ID)
         .stream().filter(facet -> facet.getConfiguration().getSdk() == null)
         .findFirst();
 
@@ -123,12 +123,12 @@ public class AddPythonFacetQuickFix extends PantsQuickFix {
 
       facetWithoutSdk.ifPresent(model::removeFacet);
 
-      PythonFacetType type = PythonFacetType.getInstance();
-      PythonFacetConfiguration conf = type.createDefaultConfiguration();
+      JavaPythonFacetType type = JavaPythonFacetType.getInstance();
+      JavaPythonFacetConfiguration conf = type.createDefaultConfiguration();
       conf.setSdk(sdk);
 
       String facetName = module.getName() + "-default-python";
-      PythonFacet facet = type.createFacet(module, facetName, conf, null);
+      JavaPythonFacet facet = type.createFacet(module, facetName, conf, null);
 
       model.addFacet(facet);
       commits.add(model::commit);
