@@ -19,9 +19,9 @@ import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkModificator;
 import com.intellij.openapi.util.Computable;
+import com.intellij.python.community.plugin.java.facet.JavaPythonFacet;
+import com.intellij.python.community.plugin.java.facet.JavaPythonFacetType;
 import com.intellij.util.containers.ContainerUtil;
-import com.jetbrains.python.facet.PythonFacet;
-import com.jetbrains.python.facet.PythonFacetType;
 import com.jetbrains.python.sdk.PythonSdkAdditionalData;
 import com.jetbrains.python.sdk.PythonSdkType;
 import com.jetbrains.python.sdk.PythonSdkUtil;
@@ -116,9 +116,9 @@ public class PantsPythonSetupDataService implements ProjectDataService<PythonSet
         return;
       }
       FacetManager facetManager = FacetManager.getInstance(module);
-      PythonFacet facet = facetManager.getFacetByType(PythonFacetType.getInstance().getId());
+      JavaPythonFacet facet = facetManager.getFacetByType(JavaPythonFacetType.getInstance().getId());
       if (facet == null) {
-        facet = facetManager.createFacet(PythonFacetType.getInstance(), "Python", null);
+        facet = facetManager.createFacet(JavaPythonFacetType.getInstance(), "Python", null);
         facet.getConfiguration().setSdk(pythonSdk);
 
         final ModifiableFacetModel facetModel = modelsProvider.getModifiableFacetModel(module);
